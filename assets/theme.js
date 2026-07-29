@@ -136,7 +136,15 @@ if (
       const nextRequest = ++request
       const candidate = new Image()
       gallery.classList.add("is-loading")
-      candidate.onload = () => {
+      candidate.onload = async () => {
+        // Older mobile Safari can fire `load` before the decoded bitmap is
+        // ready to composite. Keep the current photo visible until decoding
+        // finishes, then perform one atomic source swap.
+        if (candidate.decode) {
+          try {
+            await candidate.decode()
+          } catch {}
+        }
         if (nextRequest !== request) return
         index = upcomingIndex
         image.src = candidate.src

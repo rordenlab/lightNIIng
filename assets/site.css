@@ -494,8 +494,10 @@ a:hover {
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  contain: paint;
   padding: 0;
   border-radius: 18px;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
 .lightbox__frame--scanner::after {
@@ -504,8 +506,7 @@ a:hover {
   inset: 0;
   z-index: 1;
   background: var(--accent);
-  mix-blend-mode: color;
-  opacity: 0.16;
+  opacity: 0.14;
   pointer-events: none;
 }
 
@@ -1407,10 +1408,13 @@ a:hover {
   justify-self: end;
   padding: 0;
   overflow: hidden;
+  contain: paint;
   color: inherit;
   background: var(--bg-sidebar);
   border: 1px solid color-mix(in srgb, var(--accent) 12%, transparent);
   border-radius: 18px;
+  /* Force older WebKit versions to clip composited children to the radius. */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
   box-shadow:
     inset 0 0 28px color-mix(in srgb, var(--accent) 10%, transparent),
     0 22px 55px -44px color-mix(in srgb, var(--accent) 32%, transparent);
@@ -1424,8 +1428,9 @@ a:hover {
   z-index: 1;
   border-radius: inherit;
   background: var(--accent);
-  mix-blend-mode: color;
-  opacity: 0.16;
+  /* A normal translucent wash is visually close to color blending, but it
+     remains in the same stable compositing layer on older mobile Safari. */
+  opacity: 0.14;
   pointer-events: none;
 }
 
@@ -1449,7 +1454,8 @@ a:hover {
 }
 
 .tut-hero__scanner.is-loading img {
-  opacity: 0.62;
+  /* Keep the current decoded image visible while its successor loads. */
+  opacity: 0.9;
 }
 
 .tut-hero__scanner:active {
