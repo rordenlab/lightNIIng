@@ -32,7 +32,7 @@ const config: SiteConfig = {
   siteUrl: "https://lightniing.org",
   appUrl: "https://github.com/rordenlab/lightNIIng",
   releasesUrl: "https://github.com/rordenlab/lightNIIng",
-  defaultAccent: "orange",
+  defaultAccent: "garnet",
   projects: [
     {
       slug: "spatial_processing",
