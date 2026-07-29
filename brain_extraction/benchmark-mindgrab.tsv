@@ -5,5 +5,5 @@
 # unit: x
 Workflow	SpeedUp
 SynthStrip (OpenMP, CPU)	1
-niimath mindgrab(OpenMP, CPU)*	16
+niimath mindgrab (OpenMP, CPU)*	16
 mindgrab (Metal, GPU)*	19

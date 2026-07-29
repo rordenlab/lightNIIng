@@ -65,6 +65,44 @@ function parseFigure(input: string): Figure {
 const text = (x: number, y: number, value: string, attrs = "") =>
   `<text x="${x}" y="${y}" ${attrs}>${xml(value)}</text>`
 
+function wrapLabel(value: string, maxCharacters = 24): string[] {
+  const explicitLines = value.split("|").map((line) => line.trim()).filter(Boolean)
+  if (explicitLines.length > 1) return explicitLines
+  if (value.length <= maxCharacters) return [value]
+
+  const parenthetical = value.match(/^(.+?)\s+(\([^()]+\))$/)
+  if (
+    parenthetical &&
+    parenthetical[1].length <= maxCharacters &&
+    parenthetical[2].length <= maxCharacters
+  ) {
+    return [parenthetical[1], parenthetical[2]]
+  }
+
+  const lines: string[] = []
+  for (const word of value.split(/\s+/)) {
+    const current = lines.at(-1)
+    if (!current || current.length + word.length + 1 > maxCharacters) lines.push(word)
+    else lines[lines.length - 1] = `${current} ${word}`
+  }
+  return lines
+}
+
+function horizontalLabel(
+  x: number,
+  center: number,
+  value: string,
+  highlighted: boolean,
+): string {
+  const lines = wrapLabel(value)
+  const lineHeight = 20
+  const firstY = center + 6 - ((lines.length - 1) * lineHeight) / 2
+  const spans = lines
+    .map((line, index) => `<tspan x="${x}" y="${firstY + index * lineHeight}">${xml(line)}</tspan>`)
+    .join("")
+  return `<text text-anchor="end" class="label${highlighted ? " accent" : ""}" aria-label="${xml(value.replace(/\|/g, " "))}">${spans}</text>`
+}
+
 function horizontalChart(figure: Figure): string {
   const left = 290
   const top = 205
@@ -75,7 +113,7 @@ function horizontalChart(figure: Figure): string {
   const parts: string[] = []
   figure.rows.forEach((row, rowIndex) => {
     const center = top + rowIndex * rowGap
-    parts.push(text(left - 22, center + 6, row.label, `text-anchor="end" class="label${row.highlighted ? " accent" : ""}"`))
+    parts.push(horizontalLabel(left - 22, center, row.label, row.highlighted))
     row.values.forEach((value, seriesIndex) => {
       const y = center - ((figure.headers.length - 1) * (barHeight + 4)) / 2 + seriesIndex * (barHeight + 4)
       const barWidth = (value / max) * width

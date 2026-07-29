@@ -21,7 +21,9 @@ Candidate*\t8`)
   expect(svg).not.toContain('class="legend"')
   expect(svg).toContain('height="560" viewBox="0 0 1200 560"')
   expect(svg).toContain('<g transform="translate(0 -30)">')
-  expect(svg).toContain('class="label accent">Candidate</text>')
+  expect(svg).toContain(
+    'class="label accent" aria-label="Candidate"><tspan x="268" y="285">Candidate</tspan></text>',
+  )
   expect(svg).toContain("var(--accent, #bf5700)")
   expect(svg).toContain("var(--fg-base, #f0f1ed)")
   expect(svg).toContain("var(--fg-muted, #9a9f9b)")
@@ -34,6 +36,23 @@ Candidate*\t8`)
 
 test("renderer rejects unknown chart styles", () => {
   expect(() => renderFigure("# type: pie\nLabel\tValue\nA\t1")).toThrow("Unknown figure type")
+})
+
+test("long horizontal labels wrap at a readable semantic boundary", () => {
+  const automatic = renderFigure(
+    "Workflow\tSpeedup\nniimath mindgrab (OpenMP, CPU)*\t16",
+  )
+  expect(automatic).toContain(
+    'aria-label="niimath mindgrab (OpenMP, CPU)"><tspan x="268" y="201">niimath mindgrab</tspan><tspan x="268" y="221">(OpenMP, CPU)</tspan>',
+  )
+
+  const explicit = renderFigure(
+    "Workflow\tSpeedup\nniimath mindgrab|(OpenMP, CPU)*\t16",
+  )
+  expect(explicit).toContain(
+    'aria-label="niimath mindgrab (OpenMP, CPU)"><tspan x="268" y="201">niimath mindgrab</tspan><tspan x="268" y="221">(OpenMP, CPU)</tspan>',
+  )
+  expect(explicit).not.toContain("mindgrab|")
 })
 
 test("unchanged TSV figures are not rewritten", async () => {
