@@ -53,6 +53,13 @@ test("long horizontal labels wrap at a readable semantic boundary", () => {
     'aria-label="niimath mindgrab (OpenMP, CPU)"><tspan x="268" y="201">niimath mindgrab</tspan><tspan x="268" y="221">(OpenMP, CPU)</tspan>',
   )
   expect(explicit).not.toContain("mindgrab|")
+
+  const proportionalWidth = renderFigure(
+    "Workflow\tSpeedup\nSynthStrip (OpenMP, CPU)\t1",
+  )
+  expect(proportionalWidth).toContain(
+    'aria-label="SynthStrip (OpenMP, CPU)"><tspan x="268" y="201">SynthStrip</tspan><tspan x="268" y="221">(OpenMP, CPU)</tspan>',
+  )
 })
 
 test("unchanged TSV figures are not rewritten", async () => {

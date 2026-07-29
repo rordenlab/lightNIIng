@@ -68,16 +68,17 @@ const text = (x: number, y: number, value: string, attrs = "") =>
 function wrapLabel(value: string, maxCharacters = 24): string[] {
   const explicitLines = value.split("|").map((line) => line.trim()).filter(Boolean)
   if (explicitLines.length > 1) return explicitLines
-  if (value.length <= maxCharacters) return [value]
 
   const parenthetical = value.match(/^(.+?)\s+(\([^()]+\))$/)
   if (
     parenthetical &&
+    value.length > 22 &&
     parenthetical[1].length <= maxCharacters &&
     parenthetical[2].length <= maxCharacters
   ) {
     return [parenthetical[1], parenthetical[2]]
   }
+  if (value.length <= maxCharacters) return [value]
 
   const lines: string[] = []
   for (const word of value.split(/\s+/)) {
