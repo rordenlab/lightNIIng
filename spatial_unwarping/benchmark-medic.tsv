@@ -1,0 +1,10 @@
+# type: vertical
+# title: Multi-echo correction pipeline
+# subtitle: End-to-end runtime (seconds)
+# source: https://github.com/rordenlab/medic_bench
+# unit: x
+Path	Runtime (speedup)
+MEDIC	1
+MEDIC (OpenMP)	6
+niimath*	51
+niimath (OpenMP)*	214

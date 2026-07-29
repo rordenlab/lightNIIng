@@ -1,0 +1,10 @@
+# type: vertical
+# title: Vertical bar demo
+# subtitle: Best for a compact set of short category names
+# source: https://example.org/benchmark/vertical
+# unit: ×
+Backend	Throughput
+CPU	1
+WebGPU	7
+Metal*	11
+CUDA	13

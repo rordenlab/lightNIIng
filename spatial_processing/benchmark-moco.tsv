@@ -1,0 +1,10 @@
+# type: horizontal
+# title: Motion Correction
+# subtitle: Realigning brain images for head motion and gradient heating
+# source: https://github.com/rordenlab/moco_bench#2026--76-x-76-x-46-131-volumes
+# unit: x
+Tool	Runtime (speedup)
+FSL mcflirt	0.81
+AFNI 3dvolreg	1
+niimath moco*	3.4
+niimath moco (OpenMP)*	18

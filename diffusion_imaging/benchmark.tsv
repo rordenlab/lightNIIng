@@ -1,0 +1,11 @@
+# type: horizontal
+# title: Streamline Generation
+# subtitle: Acceleration provided by GPU relative to CPU
+# source: https://github.com/neurolabusc/GPUStreamlines/tree/WebGPU/cuslines/webgpu
+# unit: ×
+Backend	Throughput
+CPU	1
+Linux WebGPU*	41
+Mac WebGPU*	47
+Mac Metal*	95
+Linux CUDA	273

@@ -1,0 +1,4 @@
+#!/bin/sh
+# Block commits that do not type-check.
+# Bypass in a pinch with: git commit --no-verify
+exec bun run typecheck

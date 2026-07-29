@@ -1,0 +1,11 @@
+# type: vertical
+# title: Diffusion processing
+# subtitle: Optimized tools reduce total run time (shorter bars are faster)
+# source: https://github.com/neurolabusc/DiffusionBench
+# unit: ×
+Backend	Speedup
+MacBookk M5 Max (Metal)*	894
+DGX Spark	4321
+DGX Spark (optimized)*	1622
+AMD 7995wx RTX4090	2159
+AMD 7995wx RTX4090 (optimized)*	1135

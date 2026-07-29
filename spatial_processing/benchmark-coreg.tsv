@@ -1,0 +1,11 @@
+# type: horizontal
+# title: Spatial Registration
+# subtitle: Spatial normalization of various images to standard space
+# source: https://github.com/neurolabusc/allineate/tree/main/benchmark
+# unit: x
+Tool	Speedup
+AFNI 3dAllineate	1
+AFNI 3dAllineate (OpenMP)	1.5
+FSL FLIRT	17.9
+niimath allineate*	76.8
+niimath allineate (OpenMP)*	197.6

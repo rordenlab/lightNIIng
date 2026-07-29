@@ -1,0 +1,10 @@
+# type: horizontal
+# title: Slice Time Correction
+# subtitle: Adjusting for different slices in a 3D Volume
+# source: https://github.com/rordenlab/moco_bench#2026--76-x-76-x-46-131-volumes-46-slice-times-tr-1534-s
+# unit: x
+Tool	Runtime (speedup)
+FSL slicetimer	0.72
+AFNI 3dTshift	1
+niimath stc*	2.8
+niimath stc (OpenMP)*	9.8

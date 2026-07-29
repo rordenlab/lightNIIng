@@ -1,0 +1,9 @@
+# type: horizontal
+# title: Horizontal bar demo
+# subtitle: Best when category labels need more room
+# source: https://example.org/benchmark/horizontal
+# unit: s
+Implementation	Runtime
+Original reference	92
+Portable baseline	54
+lightNIIng*	17

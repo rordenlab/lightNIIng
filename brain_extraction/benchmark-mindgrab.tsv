@@ -1,0 +1,9 @@
+# type: horizontal
+# title: Brain Extraction
+# subtitle: Faster scalp stripping
+# source: https://github.com/rordenlab/strip_bench#runtime-results
+# unit: x
+Workflow	SpeedUp
+SynthStrip (OpenMP, CPU)	1
+niimath mindgrab(OpenMP, CPU)*	16
+mindgrab (Metal, GPU)*	19

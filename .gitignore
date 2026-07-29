@@ -1,0 +1,4 @@
+node_modules/
+dist/
+.asset-manifest.json
+**/.DS_Store

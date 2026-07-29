@@ -1,0 +1,10 @@
+# type: line
+# title: Line chart demo
+# subtitle: Multiple series across an ordered axis
+# source: https://example.org/benchmark/line
+# unit: ms
+Workload	Reference	lightNIIng
+Small	18	7
+Medium*	41	13
+Large	79	22
+XL	126	34
