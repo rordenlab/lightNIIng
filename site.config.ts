@@ -32,7 +32,7 @@ const config: SiteConfig = {
   siteUrl: "https://lightniing.org",
   appUrl: "https://github.com/rordenlab/lightNIIng",
   releasesUrl: "https://github.com/rordenlab/lightNIIng",
-  defaultAccent: "garnet",
+  defaultAccent: "orange",
   projects: [
     {
       slug: "spatial_processing",
@@ -68,6 +68,13 @@ const config: SiteConfig = {
         "Our team has accelerated popular tools for processing diffusion imaging to improve tractography.",
       tags: ["WebGPU", "Metal", "streamlines"],
     },
+    {
+      slug: "web_apps",
+      title: "Web Apps",
+      summary:
+        "Browser-native neuroimaging applications that keep data local while putting capable workflows within reach.",
+      tags: ["WebAssembly", "WebGPU", "Private by design"],
+    },
   ],
   tools: [
     {
@@ -87,8 +94,38 @@ const config: SiteConfig = {
     },
     {
       name: "mindgrab",
-      href: "https://github.com/rordenlab/mindgrab",
+      href: "https://github.com/neuroneural/brainchop",
       blurb: "Lightweight brain extraction for practical imaging workflows.",
+    },
+    {
+      name: "ITK-Wasm",
+      href: "https://github.com/InsightSoftwareConsortium/itk-wasm",
+      blurb: "Web-ready ITK tools for high-performance medical image processing.",
+    },
+    {
+      name: "Neurodesk",
+      href: "https://play.neurodesk.org/",
+      blurb: "Reproducible neuroimaging tools, ready across local, cloud, and HPC environments.",
+    },
+    {
+      name: "VesselBoost",
+      href: "https://github.com/KMarshallX/VesselBoost",
+      blurb: "Deep-learning vessel segmentation for high-resolution MR angiography.",
+    },
+    {
+      name: "QSMxT",
+      href: "https://github.com/QSMxT/QSMxT",
+      blurb: "A fast, BIDS-native pipeline for quantitative susceptibility mapping.",
+    },
+    {
+      name: "ROMEO",
+      href: "https://github.com/korbinian90/ROMEO.jl",
+      blurb: "Fast 3D and 4D phase unwrapping for MR data.",
+    },
+    {
+      name: "OSF project",
+      href: "https://osf.io/zge9t/overview",
+      blurb: "Open project materials and resources for the neuroimaging community.",
     },
     {
       name: "BIDSvue",

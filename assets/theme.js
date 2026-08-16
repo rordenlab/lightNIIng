@@ -20,7 +20,7 @@ if (
 // the interactive toggle + swatches and keeps them in sync.
 ;(() => {
   const root = document.documentElement
-  const KEY_THEME = "lightniing:theme" // 'light' | 'dark' | null(default dark)
+  const KEY_THEME = "lightniing:theme" // 'light' | 'dark' | null(default light)
   const KEY_ACCENT = "lightniing:accent"
 
   const storedTheme = () => {
@@ -32,7 +32,7 @@ if (
   }
   const isDark = () => {
     const t = storedTheme()
-    return t ? t === "dark" : true
+    return t ? t === "dark" : false
   }
 
   // Theme toggle

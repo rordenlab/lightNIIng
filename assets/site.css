@@ -393,6 +393,96 @@ a:hover {
 .prose a {
   font-weight: 600;
 }
+
+.webapp-directory {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 0.75rem;
+  max-width: none;
+  margin-top: 1.5rem;
+}
+
+/* Web-app tiles benefit from the full responsive canvas; prose pages retain
+   the narrower reading measure established for tutorials. */
+.container:has(.webapp-directory) {
+  max-width: var(--maxw);
+}
+
+.panel:has(.webapp-directory) .prose {
+  max-width: none;
+}
+
+.webapp-directory a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-height: 7rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  color: var(--fg-base);
+  text-decoration: none;
+  transition: border-color 150ms ease, transform 150ms ease;
+}
+
+.webapp-directory a:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.webapp-directory strong {
+  font-size: 0.94rem;
+}
+
+.webapp-directory span {
+  color: var(--fg-muted);
+  font-size: 0.84rem;
+  font-weight: 450;
+  line-height: 1.45;
+}
+
+.webapps-modularity {
+  display: block;
+  width: min(100%, 72rem);
+  margin: 1.7rem auto 0;
+  padding: clamp(0.65rem, 1.4vw, 1rem);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border-strong));
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 85% 5%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 30%),
+    color-mix(in srgb, var(--accent) 5%, var(--bg-elevated));
+  box-shadow: 18px 28px 70px -46px var(--accent-glow);
+  color: var(--fg-base);
+  cursor: zoom-in;
+  text-align: left;
+  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.webapps-modularity:hover {
+  border-color: var(--accent);
+  box-shadow: 18px 34px 80px -42px var(--accent-glow);
+  transform: translateY(-2px);
+}
+
+.webapps-modularity img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.webapps-modularity span {
+  display: block;
+  padding: 0.75rem 0.25rem 0.1rem;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-transform: uppercase;
+}
 .brand-inline__accent {
   color: var(--accent);
 }
@@ -934,6 +1024,13 @@ a:hover {
   background-image: var(--hero-base-image);
   filter: contrast(1.02) brightness(0.78);
   opacity: 0.88;
+}
+
+/* On the light site theme, let the supplied base imagery retain its original
+   luminance. The darker treatment above remains useful against the dark UI. */
+:root[data-theme="light"] .hero__mesh-base {
+  filter: none;
+  opacity: 1;
 }
 
 .hero__activation {
@@ -1741,6 +1838,13 @@ a:hover {
   opacity: var(--about-radar-base-opacity);
 }
 
+/* The landing-page hero uses this radar composition. In the light theme its
+   base artwork should remain as supplied, not be faded for the dark palette. */
+:root[data-theme="light"] .about__radar-base {
+  filter: none;
+  opacity: 1;
+}
+
 .about__radar-activation {
   z-index: 2;
   inset: 0;
@@ -1930,120 +2034,129 @@ a:hover {
   font-size: 0.9rem;
 }
 
-/* About-page bookend: the home page's technical field panel, adapted for
-   the team's physical research hub and documentary architectural image. */
-.about-hub {
+/* The collaboration is intentionally a peer directory: every team receives
+   the same visual weight and its position is shuffled on each page load. */
+.about-teams {
   padding-block: clamp(3.4rem, 5.5vw, 5.6rem);
 }
 
-.about-hub .section__head {
+.about-teams .section__head {
   margin-bottom: clamp(2rem, 3.5vw, 3.2rem);
 }
 
-.about-hub .section__head h2 {
+.about-teams .section__head h2 {
   max-width: 12ch;
 }
 
-.about-hub .section__lead {
+.about-teams .section__lead {
   max-width: 68ch;
   line-height: 1.68;
 }
 
-.about-hub .section__lead a {
-  color: var(--hero-fg);
-  font-weight: 620;
-  text-decoration-color: color-mix(in srgb, var(--accent) 58%, transparent);
-  text-underline-offset: 0.2em;
-}
-
-.about-hub .section__lead a:hover {
-  color: var(--accent);
-}
-
-.about-hub__grid {
+.about-teams__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.55fr);
-  align-items: stretch;
-  gap: clamp(2rem, 5vw, 5rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.65rem);
 }
 
-.about-hub__image {
-  position: relative;
-  isolation: isolate;
-  align-self: start;
-  margin: 0;
-  overflow: hidden;
-  background: #0a0c0c;
-  border-radius: 18px;
-  box-shadow: 0 24px 64px -42px var(--accent-glow);
+.team-card {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.34fr) minmax(0, 1fr);
+  gap: clamp(1rem, 2vw, 1.8rem);
+  min-height: 100%;
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--bg-elevated) 72%, transparent);
 }
 
-.about-hub__image::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: var(--accent);
-  mix-blend-mode: color;
-  opacity: 0.16;
-  pointer-events: none;
+:root[data-theme="light"] .team-card {
+  background: var(--bg-base);
 }
 
-.about-hub__image img {
-  display: block;
+.team-card__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.team-card__logo {
+  display: grid;
+  place-items: center;
   width: 100%;
-  height: auto;
-  filter: grayscale(1) contrast(1.04);
-  opacity: 0.9;
+  aspect-ratio: 1;
+  padding: 0.8rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: color-mix(in srgb, #fff 90%, var(--accent) 10%);
+  color: inherit;
+  cursor: zoom-in;
+  transition: border-color 150ms ease, transform 150ms ease;
 }
 
-.about-hub__directory {
-  display: flex;
-  flex-direction: column;
-}
-
-.about-hub__directory > * {
-  padding: 1rem 0 1.15rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
-}
-
-.about-hub__directory a {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  color: var(--hero-fg);
-  text-decoration: none;
-  transition: border-color 180ms ease, transform 180ms ease;
-}
-
-.about-hub__directory a:hover {
+.team-card__logo:hover {
   border-color: var(--accent);
   transform: translateY(-2px);
 }
 
-.about-hub__directory strong {
-  font-size: 0.95rem;
-  font-weight: 650;
+.team-card__logo picture,
+.team-card__logo img {
+  display: grid;
+  place-items: center;
+  max-width: 100%;
+  max-height: 100%;
 }
 
-.about-hub__directory a span,
-.about-hub__directory address {
-  color: var(--hero-muted);
-  font-size: 0.78rem;
-  line-height: 1.55;
+.team-card__logo img {
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
-.about-hub__directory a span {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.about-hub__directory address {
-  display: flex;
-  flex-direction: column;
+.team-card h3 {
   margin: 0;
-  font-style: normal;
+  color: var(--fg-base);
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  letter-spacing: -0.02em;
+}
+
+.team-card__prose {
+  color: var(--fg-muted);
+  font-size: 0.9rem;
+  line-height: 1.62;
+}
+
+.team-card__prose > :first-child {
+  margin-top: 0;
+}
+
+.team-card__prose > :last-child {
+  margin-bottom: 0;
+}
+
+.team-card__prose h2 {
+  margin: 1.25rem 0 0.45rem;
+  color: var(--fg-base);
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.team-card__prose ul {
+  margin: 0.45rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.team-card__prose a {
+  color: var(--fg-base);
+  text-decoration-color: color-mix(in srgb, var(--accent) 58%, transparent);
+  text-underline-offset: 0.18em;
+}
+
+.team-card__prose a:hover {
+  color: var(--accent);
 }
 
 /* lightNIIng identity: make NII the mark. */
@@ -2187,7 +2300,7 @@ a:hover {
     gap: 1.6rem;
   }
 
-  .about-hub__grid {
+  .about-teams__grid {
     grid-template-columns: 1fr;
   }
 
@@ -2225,6 +2338,10 @@ a:hover {
   .tools,
   .about-links {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .team-card {
+    grid-template-columns: minmax(7rem, 0.28fr) minmax(0, 1fr);
   }
 }
 
@@ -2284,6 +2401,24 @@ a:hover {
   .tools,
   .about-links {
     grid-template-columns: 1fr;
+  }
+
+  .webapp-directory {
+    grid-template-columns: 1fr;
+  }
+
+  .team-card {
+    grid-template-columns: 1fr;
+  }
+
+  .team-card__identity {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    align-items: center;
+  }
+
+  .team-card__logo {
+    width: 5.5rem;
   }
 
   .about__fronts > div {

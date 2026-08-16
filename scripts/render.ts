@@ -260,7 +260,7 @@ function topbar(base: string): string {
       ${sep}
       <a class="topnav-link" href="${base}index.html#projects">Projects</a>
       ${sep}
-      <a class="topnav-link" href="${base}about/">About</a>
+      <a class="topnav-link" href="${base}about/">Teams</a>
       ${sep}
       <a class="topnav-link" href="${base}index.html#tools">Source</a>
     </header>${peek}
@@ -282,7 +282,7 @@ function footer(): string {
   </footer>`
 }
 
-export const HEAD_THEME_SCRIPT = `(function(){try{var t=localStorage.getItem('lightniing:theme')||'dark';document.documentElement.setAttribute('data-theme',t);var a=localStorage.getItem('lightniing:accent')||'${config.defaultAccent}';document.documentElement.setAttribute('data-accent',a);}catch(e){document.documentElement.setAttribute('data-theme','dark');document.documentElement.setAttribute('data-accent','${config.defaultAccent}');}})();`
+export const HEAD_THEME_SCRIPT = `(function(){try{var t=localStorage.getItem('lightniing:theme')||'light';document.documentElement.setAttribute('data-theme',t);var a=localStorage.getItem('lightniing:accent')||'${config.defaultAccent}';document.documentElement.setAttribute('data-accent',a);}catch(e){document.documentElement.setAttribute('data-theme','light');document.documentElement.setAttribute('data-accent','${config.defaultAccent}');}})();`
 
 export type LayoutOpts = {
   title: string

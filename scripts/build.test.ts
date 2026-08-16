@@ -35,7 +35,7 @@ test("layout emits a correct per-page canonical + social card", () => {
 test("home canonical is the bare origin with no double slash", () => {
   const html = layout({ title: "T", description: "D", base: "", path: "", main: "" })
   expect(html).toContain(`<link rel="canonical" href="${config.siteUrl}/" />`)
-  expect(html).toContain("localStorage.getItem('lightniing:theme')||'dark'")
+  expect(html).toContain("localStorage.getItem('lightniing:theme')||'light'")
   expect(html).toContain(`localStorage.getItem('lightniing:accent')||'${config.defaultAccent}'`)
   expect(html).toContain(`data-lightbox-src="assets/overview.svg"`)
   expect(html).toContain("See Overview")
@@ -43,17 +43,26 @@ test("home canonical is the bare origin with no double slash", () => {
   expect(html).toContain(`href="index.html#tools">Source</a>`)
 })
 
-test("About resource links trace back to the single configured repo URL", () => {
+test("About presents the peer teams and their supplied profiles", () => {
   const html = aboutPage()
-  expect(html).toContain(`href="${config.appUrl}"`) // Source
-  expect(html).toContain(`href="${config.appUrl}/issues"`) // Issues
-  expect(html).toContain(`href="${config.appUrl}/blob/main/LICENSE"`) // License
   expect(html).toContain("clean-room reimplement")
   expect(html).toContain("Cross-Vendor GPU Acceleration")
   expect(html).toContain("Simplify, then add lightness")
   expect(html).toContain("- Colin Chapman")
-  expect(html).toContain("Our scientific home")
-  expect(html).toContain("../assets/bhc_rendering1_825_350.jpg")
+  expect(html).toContain("Independent teams")
+  expect(html).toContain("collaboration of equal peers")
+  expect(html).toContain('data-team-grid')
+  expect(html).toContain("brainchop")
+  expect(html).toContain("fideus labs")
+  expect(html).toContain("Neurodesk")
+  expect(html).toContain("NiiVue")
+  expect(html).toContain("../assets/teams/neurodesk/logo-dark.png")
+  expect(html).toContain("../assets/teams/fideus/logo.png")
+  expect(html).not.toContain('type="image/svg+xml"')
+  expect(html).toContain('data-lightbox-src="../assets/teams/brainchop/peak.jpg"')
+  expect(html).toContain('data-lightbox-src="../assets/teams/neurodesk/peak.png"')
+  expect(html).toContain("../assets/teams/brainchop/logo-transparent.png")
+  expect(html).not.toContain('about-link__label">Funding')
 })
 
 test("About page embeds valid JSON-LD provenance", () => {

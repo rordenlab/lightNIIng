@@ -18,6 +18,7 @@ import { cp, mkdir, readdir, readFile, realpath, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { basename, dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
+import { marked } from "marked"
 import config from "../site.config.ts"
 import { generateFigures } from "./figures.ts"
 import { ARROW, HEAD_THEME_SCRIPT, escapeHtml, layout, mdToPanels } from "./render.ts"
@@ -404,56 +405,49 @@ function backArrow(): string {
 
 // ------- about page ---------------------------------------------------------
 
-// Canonical project links, gathered in one place. The About page exists partly
-// so a human — and a domain-reputation crawler (Cisco Talos/Umbrella, Zscaler,
-// …) — can see at a glance that this is legitimate, funded, open-source science
-// and categorize the new domain accordingly rather than blocking an unknown.
 const REPO = config.appUrl // single source of truth for the project repo URL
-const LINKS = {
-  bids: "https://bids.neuroimaging.io/",
-  team: "https://niivue.com/",
-  lead: "https://scholar.google.com/citations?user=00jLGq8AAAAJ&hl=en",
-  award: "https://reporter.nih.gov/search/6jGLf73uBUWBbKBDMHhH5Q/project-details/10724895",
-  mccausland:
-    "https://sc.edu/study/colleges_schools/artsandsciences/centers_and_institutes/mccausland_center/",
-  prisma:
-    "https://www.siemens-healthineers.com/magnetic-resonance-imaging/3t-mri-scanner/magnetom-prisma",
-  vida:
-    "https://www.siemens-healthineers.com/en-us/magnetic-resonance-imaging/3t-mri-scanner/magnetom-vida",
-  terra:
-    "https://www.siemens-healthineers.com/en-pk/magnetic-resonance-imaging/7t-mri-scanner/magnetom-terra-x",
-  brainNetwork: "https://sc.edu/about/centers_institutes/brain-health/brain_health_network/",
-  brainCenter: "https://sc.edu/about/centers_institutes/brain-health/brain_health_center/",
-  usc: "https://sc.edu/",
-  source: REPO,
-  issues: `${REPO}/issues`,
-  license: `${REPO}/blob/main/LICENSE`,
-}
+const TEAM_SHUFFLE_SCRIPT = `(function(){var grid=document.querySelector('[data-team-grid]');if(!grid)return;var teams=Array.from(grid.children);for(var i=teams.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=teams[i];teams[i]=teams[j];teams[j]=t}teams.forEach(function(team){grid.appendChild(team)})})();`
 
-function aboutLink(label: string, sub: string, href: string): string {
+const TEAMS = [
+  { slug: "brainchop", name: "brainchop", peak: "jpg", png: { width: 336, height: 336 } },
+  { slug: "fideus", name: "fideus labs", peak: "png", png: { width: 266, height: 336 } },
+  // The supplied SVG's white wordmark does not stay legible on all themes.
+  // Use the contrast-corrected PNG in the directory; retain the SVG in source.
+  { slug: "neurodesk", name: "Neurodesk", peak: "png", png: { width: 336, height: 50 } },
+  // The legacy SVG has substantial empty viewBox space; use its full-area PNG
+  // in the directory while retaining the SVG alongside the team's source files.
+  { slug: "niivue", name: "NiiVue", peak: "jpg", png: { width: 336, height: 336 } },
+] as const
+
+function teamCard(team: (typeof TEAMS)[number]): string {
+  const markdown = readFileSync(join(ROOT, "teams", team.slug, "about.md"), "utf8")
+  const profile = marked.parse(markdown, { async: false }) as string
+  const png =
+    team.slug === "brainchop"
+      ? "logo-transparent.png"
+      : team.slug === "neurodesk"
+        ? "logo-dark.png"
+      : "logo.png"
+  const logo = `<img src="../assets/teams/${team.slug}/${png}" width="${team.png.width}" height="${team.png.height}" alt="${escapeHtml(team.name)} logo" loading="lazy" decoding="async" />`
   return `
-      <a class="about-link" href="${escapeHtml(href)}">
-        <span class="about-link__label">${escapeHtml(label)}${ARROW}</span>
-        <span class="about-link__sub">${escapeHtml(sub)}</span>
-      </a>`
+        <article class="team-card team-card--${team.slug}">
+          <div class="team-card__identity">
+            <button class="team-card__logo" type="button" data-lightbox-src="../assets/teams/${team.slug}/peak.${team.peak}" data-lightbox-alt="${escapeHtml(team.name)} team image" aria-label="View ${escapeHtml(team.name)} team image">${logo}</button>
+            <h3>${escapeHtml(team.name)}</h3>
+          </div>
+          <div class="team-card__prose">${profile}</div>
+        </article>`
 }
 
 export function aboutPage(): string {
-  const links = [
-    aboutLink("Funding", "NIH BRAIN Initiative · RF1MH133701", LINKS.award),
-    aboutLink("Lead", "Chris Rorden · Google Scholar", LINKS.lead),
-    aboutLink("Team", "The NiiVue team", LINKS.team),
-    aboutLink("Source", "Code on GitHub", LINKS.source),
-    aboutLink("Issues", "Report a bug or ask a question", LINKS.issues),
-    aboutLink("License", "BSD 2-Clause · open source", LINKS.license),
-  ].join("")
+  const teams = TEAMS.map(teamCard).join("")
 
   const main = `
   <section class="section about">
     <div class="container">
       <a class="back" href="../index.html">${backArrow()} Back to lightNIIng</a>
       <div class="section__head">
-        <p class="section__eyebrow">About</p>
+        <p class="section__eyebrow">Teams</p>
         <h2>Open software, modern performance</h2>
       </div>
       <div class="about__prose">
@@ -475,7 +469,6 @@ export function aboutPage(): string {
         </dl>
         <p>Our software aims for functional equivalence with the standard tools the community relies on, but with a significantly smaller footprint, fewer dependencies, and no restrictive licensing. Note that “equivalent” does not mean bit-identical: modern optimizations (such as fused multiply-add operations) preserve higher precision during intermediate calculations than traditional sequential floating-point operations.</p>
       </div>
-      <div class="about-links">${links}</div>
     </div>
     <blockquote class="about__quote">
       <p>“Simplify, then add lightness”</p>
@@ -483,37 +476,21 @@ export function aboutPage(): string {
     </blockquote>
   </section>
 
-  <section class="section section--tools about-hub">
+  <section class="section section--tools about-teams">
     <div class="container">
       <div class="section__head">
         <div>
-          <p class="section__eyebrow">Our scientific home</p>
-          <h2>Global team,<br />shared center.</h2>
+          <p class="section__eyebrow">The collaboration</p>
+          <h2>Independent teams,<br />shared purpose.</h2>
         </div>
-        <p class="section__lead">The light<span class="brand-inline__accent">nii</span>ng team brings together contributors from around the world. Our hub is the <a href="${LINKS.mccausland}">McCausland Center for Brain Imaging</a>, where Siemens 3T <a href="${LINKS.prisma}">Prisma</a>, 3T <a href="${LINKS.vida}">Vida</a>, and 7T <a href="${LINKS.terra}">Terra.X</a> systems anchor the <a href="${LINKS.brainNetwork}">Brain Health Network</a>.</p>
+        <p class="section__lead">light<span class="brand-inline__accent">nii</span>ng is a collaboration of equal peers. Each team brings distinct expertise to a common goal: open, portable, high-performance neuroimaging infrastructure that researchers can use, inspect, and extend.</p>
       </div>
-      <div class="about-hub__grid">
-        <figure class="about-hub__image">
-          <img src="../assets/bhc_rendering1_825_350.jpg" width="825" height="350" alt="Architectural rendering of the Brain Health Center at the University of South Carolina" loading="lazy" decoding="async" />
-        </figure>
-        <div class="about-hub__directory">
-          <a href="${LINKS.brainCenter}">
-            <strong>Brain Health Center</strong>
-            <span>Research and clinical care${ARROW}</span>
-          </a>
-          <a href="${LINKS.usc}">
-            <strong>University of South Carolina</strong>
-            <span>Columbia, South Carolina${ARROW}</span>
-          </a>
-          <address>
-            <span>3555 Harden Street Extension</span>
-            <span>Columbia, SC 29203</span>
-            <span>USA</span>
-          </address>
-        </div>
+      <div class="about-teams__grid" data-team-grid>
+${teams}
       </div>
     </div>
-  </section>`
+  </section>
+  <script>${TEAM_SHUFFLE_SCRIPT}</script>`
 
   // schema.org metadata — machine-readable provenance (author, funder, license)
   // for search engines and reputation crawlers.
@@ -525,21 +502,14 @@ export function aboutPage(): string {
     operatingSystem: "Windows, macOS, Linux",
     url: `${config.siteUrl}/`,
     isAccessibleForFree: true,
-    license: LINKS.license,
+    license: `${REPO}/blob/main/LICENSE`,
     codeRepository: REPO,
-    author: { "@type": "Person", name: "Chris Rorden", sameAs: LINKS.lead },
-    publisher: { "@type": "Organization", name: "NiiVue", url: LINKS.team },
-    funder: {
-      "@type": "Organization",
-      name: "NIH BRAIN Initiative",
-      identifier: "RF1MH133701",
-      url: LINKS.award,
-    },
-    sameAs: [REPO, LINKS.team],
+    author: TEAMS.map((team) => ({ "@type": "Organization", name: team.name })),
+    sameAs: [REPO],
   }
 
   return layout({
-    title: `About — ${config.title}`,
+    title: `Teams — ${config.title}`,
     description:
       `${config.title} is permissively open NeuroImaging Infrastructure focused on simpler deployment, ` +
       "high performance, and visible credit for foundational tools.",
