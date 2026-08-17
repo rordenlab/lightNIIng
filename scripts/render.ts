@@ -260,7 +260,7 @@ function topbar(base: string): string {
       ${sep}
       <a class="topnav-link" href="${base}index.html#projects">Projects</a>
       ${sep}
-      <a class="topnav-link" href="${base}about/">Teams</a>
+      <a class="topnav-link" href="${base}teams/">Teams</a>
       ${sep}
       <a class="topnav-link" href="${base}index.html#tools">Source</a>
     </header>${peek}
@@ -289,7 +289,7 @@ export type LayoutOpts = {
   description: string
   /** Relative prefix to site root: "" at root, "../" one level deep. */
   base: string
-  /** Canonical path from the site root, no leading slash ("" home, "about/", "<slug>/"). */
+  /** Canonical path from the site root, no leading slash ("" home, "teams/", "<slug>/"). */
   path: string
   main: string
   /** Optional extra markup injected into <head> (e.g. JSON-LD). */
@@ -297,7 +297,7 @@ export type LayoutOpts = {
 }
 
 export function layout(o: LayoutOpts): string {
-  const pageClass = o.path === "" ? "page-home" : o.path === "about/" ? "page-about" : "page-tutorial"
+  const pageClass = o.path === "" ? "page-home" : o.path === "teams/" ? "page-about" : "page-tutorial"
   return `<!doctype html>
 <html lang="en">
 <head>

@@ -165,7 +165,10 @@ export const ABOUT_RADAR_VARIANTS = [
   "corrender",
   "sagrender",
 ] as const
+
+export const TEAM_HERO_VARIANTS = ["t1w", "walnut"] as const
 const ABOUT_RADAR_VARIANT_SCRIPT = `(function(){var variants=${JSON.stringify(ABOUT_RADAR_VARIANTS)};document.documentElement.setAttribute('data-about-radar-variant',variants[Math.floor(Math.random()*variants.length)])})();`
+const TEAM_HERO_VARIANT_SCRIPT = `(function(){var variants=${JSON.stringify(TEAM_HERO_VARIANTS)};document.documentElement.setAttribute('data-team-hero-variant',variants[Math.floor(Math.random()*variants.length)])})();`
 
 function projectCard(t: (typeof config.projects)[number], index: number): string {
   const chips = t.tags.map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("")
@@ -403,7 +406,7 @@ function backArrow(): string {
   return `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>`
 }
 
-// ------- about page ---------------------------------------------------------
+// ------- teams page ---------------------------------------------------------
 
 const REPO = config.appUrl // single source of truth for the project repo URL
 const TEAM_SHUFFLE_SCRIPT = `(function(){var grid=document.querySelector('[data-team-grid]');if(!grid)return;var teams=Array.from(grid.children);for(var i=teams.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=teams[i];teams[i]=teams[j];teams[j]=t}teams.forEach(function(team){grid.appendChild(team)})})();`
@@ -448,32 +451,37 @@ export function aboutPage(): string {
       <a class="back" href="../index.html">${backArrow()} Back to lightNIIng</a>
       <div class="section__head">
         <p class="section__eyebrow">Teams</p>
-        <h2>Open software, modern performance</h2>
+        <h2>Accelerated code, accessible science</h2>
       </div>
       <div class="about__prose">
-        <p class="about__lead">Many foundational neuroimaging tools are free for academic use, but employ restrictive licenses that hinder commercial application and deter external developers who worry about intellectual property contamination. We clean-room reimplement these core algorithms and distribute our software under permissive licenses (BSD and MIT). We build <span class="brand-inline__accent">free</span>dom software. Our code is free as in speech: you can integrate, modify, and deploy it without licensing friction or legal ambiguity.</p>
-        <p>Beyond licensing, many domain tools suffer from performance bottlenecks. We address this on three fronts:</p>
+        <p class="about__lead">Many foundational neuroimaging tools face challenges with complex dependencies, version conflicts, non-commercial licenses, and platform incompatibilities. While containerized environments like NeuroDesk help run these established toolsets, combining them into custom workflows or deploying them directly to the web remains difficult. Our mission is to provide these core capabilities as modular building blocks that run anywhere, empowering researchers and developers to build flexible, high-performance pipelines for novel scientific challenges.</p>
+        <p>Beyond modularity, our tools are built around four core commitments:</p>
         <dl class="about__fronts">
           <div>
             <dt>Native Execution</dt>
-            <dd>Porting high-level scripts to native code delivers order-of-magnitude speedups.</dd>
+            <dd>Porting high-level scripts to native, compiled code delivers order-of-magnitude speedups for data-heavy processing.</dd>
           </div>
           <div>
             <dt>Modern Hardware Optimization</dt>
-            <dd>Legacy codebases often miss modern compiler and architecture features. We rewrite performance-critical paths to leverage SIMD vectorization, FMA instructions, OpenMP parallelism, and cache-conscious memory layouts.</dd>
+            <dd>Established codebases offer significant opportunities for performance gains on modern hardware. We accelerate critical execution paths by integrating SIMD vectorization, FMA instructions, OpenMP parallelism, and cache-conscious memory layouts.</dd>
           </div>
           <div>
             <dt>Cross-Vendor GPU Acceleration</dt>
-            <dd>Rather than locking workflows into proprietary platforms like NVIDIA CUDA, we optimize our graphics and compute pipelines across WebGPU, Metal, and Vulkan to deliver high performance on AMD, Apple, Intel, and NVIDIA hardware alike.</dd>
+            <dd>Our graphics and compute pipelines are built on open, cross-platform standards including WebGPU, Metal, and Vulkan. This ensures peak native performance across the full spectrum of modern hardware, including AMD, Apple, Intel, and NVIDIA.</dd>
+          </div>
+          <div>
+            <dt>Frictionless Community Collaboration</dt>
+            <dd>To make open science as accessible as possible, our tools are distributed under widely accepted permissive licenses (BSD and MIT). This eliminates legal hurdles for university compliance teams, enterprise partners, and independent developers alike, allowing the entire community to share, build upon, and integrate these components freely.</dd>
           </div>
         </dl>
-        <p>Our software aims for functional equivalence with the standard tools the community relies on, but with a significantly smaller footprint, fewer dependencies, and no restrictive licensing. Note that “equivalent” does not mean bit-identical: modern optimizations (such as fused multiply-add operations) preserve higher precision during intermediate calculations than traditional sequential floating-point operations.</p>
+        <p>Our software aims for functional equivalence with the standard tools the scientific community relies on, but with a drastically smaller footprint, minimal dependencies, and clear, open licensing. Note that “equivalent” does not mean bit-identical: modern hardware optimizations (such as fused multiply-add operations) preserve higher precision during intermediate calculations than traditional sequential floating-point routines.</p>
       </div>
     </div>
     <blockquote class="about__quote">
       <p>“Simplify, then add lightness”</p>
       <cite>- Colin Chapman</cite>
     </blockquote>
+    <button class="about__hero-toggle" type="button" data-team-hero-toggle data-team-hero-variants="${TEAM_HERO_VARIANTS.join(" ")}" aria-label="Show another Teams image" title="Click to show another image"></button>
   </section>
 
   <section class="section section--tools about-teams">
@@ -514,12 +522,12 @@ ${teams}
       `${config.title} is permissively open NeuroImaging Infrastructure focused on simpler deployment, ` +
       "high performance, and visible credit for foundational tools.",
     base: "../",
-    path: "about/",
+    path: "teams/",
     main,
     // Escape `<` so a value can never break out of the <script> context (JSON
     // itself doesn't neutralize a literal `</script>`). All values are trusted
     // today; this keeps it safe if a Markdown-derived field is ever added.
-    headExtra: `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}</script>`,
+    headExtra: `<script>${TEAM_HERO_VARIANT_SCRIPT}</script><script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}</script>`,
   })
 }
 
@@ -576,8 +584,14 @@ async function buildInto(outputRoot: string, canonical: boolean): Promise<void> 
   await mkdir(outputRoot, { recursive: true })
 
   await Bun.write(join(outputRoot, "index.html"), landingPage())
+  await mkdir(join(outputRoot, "teams"), { recursive: true })
+  await Bun.write(join(outputRoot, "teams", "index.html"), aboutPage())
+  // Preserve inbound links to the former route while making /teams/ canonical.
   await mkdir(join(outputRoot, "about"), { recursive: true })
-  await Bun.write(join(outputRoot, "about", "index.html"), aboutPage())
+  await Bun.write(
+    join(outputRoot, "about", "index.html"),
+    '<!doctype html><meta http-equiv="refresh" content="0; url=../teams/"><link rel="canonical" href="../teams/"><script>location.replace("../teams/")</script>',
+  )
   await Bun.write(join(outputRoot, "404.html"), await notFoundPage())
   // GitHub Pages: skip Jekyll so `assets/` etc. are served verbatim.
   await Bun.write(join(outputRoot, ".nojekyll"), "")
@@ -588,7 +602,7 @@ async function buildInto(outputRoot: string, canonical: boolean): Promise<void> 
 
   // Crawlability signals: a robots.txt + sitemap help reputation/search crawlers
   // discover and categorize the site as legitimate content (see aboutPage).
-  const urls = ["", "about/", ...config.projects.map((t) => `${t.slug}/`)]
+  const urls = ["", "teams/", ...config.projects.map((t) => `${t.slug}/`)]
   await Bun.write(
     join(outputRoot, "robots.txt"),
     `User-agent: *\nAllow: /\nSitemap: ${config.siteUrl}/sitemap.xml\n`,

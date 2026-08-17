@@ -2178,25 +2178,33 @@ a:hover {
   content: none;
 }
 
-/* The About page uses a static relief; the animated scanner is reserved for
-   the hero. */
-.about::after {
-  content: "";
+/* Teams uses a click-to-cycle collection of accent-tinted image outlines. */
+.about__hero-toggle {
+  --team-hero-mask: url("teams/hero-t1w-axial-outline.png");
+  --team-hero-ratio: 188 / 256;
+  appearance: none;
+  border: 0;
+  padding: 0;
   position: absolute;
   z-index: 0;
   top: clamp(1.5rem, 3vw, 3rem);
   right: clamp(-4rem, -2vw, -1rem);
   width: clamp(18rem, 30vw, 29rem);
-  aspect-ratio: 188 / 256;
-  pointer-events: none;
+  aspect-ratio: var(--team-hero-ratio);
+  cursor: pointer;
   background: var(--accent);
-  -webkit-mask: url("T1w-axial-outline.png") center / contain no-repeat;
-  mask: url("T1w-axial-outline.png") center / contain no-repeat;
+  -webkit-mask: var(--team-hero-mask) center / contain no-repeat;
+  mask: var(--team-hero-mask) center / contain no-repeat;
   filter:
     drop-shadow(-2px -2px 0 color-mix(in srgb, var(--accent) 30%, white))
     drop-shadow(3px 3px 0 color-mix(in srgb, var(--accent) 38%, black))
     drop-shadow(0 0 12px var(--accent-glow));
   opacity: 0.78;
+}
+
+:root[data-team-hero-variant="walnut"] .about__hero-toggle {
+  --team-hero-mask: url("teams/hero-walnut-outline.png");
+  --team-hero-ratio: 1480 / 809;
 }
 
 @media (max-width: 760px) {
@@ -2209,7 +2217,7 @@ a:hover {
     opacity: 0.58;
   }
 
-  .about::after {
+  .about__hero-toggle {
     right: -5rem;
     width: 17rem;
     opacity: 0.35;

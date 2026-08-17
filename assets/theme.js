@@ -78,6 +78,23 @@ if (
   syncSwatches()
 })()
 
+// The Teams-page outline is decorative but can be clicked or keyboard-focused
+// to cycle through the available scientific images.
+;(() => {
+  const hero = document.querySelector("[data-team-hero-toggle]")
+  if (!hero) return
+
+  const variants = (hero.getAttribute("data-team-hero-variants") || "").split(/\s+/).filter(Boolean)
+  if (variants.length < 2) return
+
+  hero.addEventListener("click", () => {
+    const root = document.documentElement
+    const current = root.getAttribute("data-team-hero-variant")
+    const next = variants[(variants.indexOf(current) + 1) % variants.length]
+    root.setAttribute("data-team-hero-variant", next)
+  })
+})()
+
 // Project heroes use the scanner archive as quiet documentary imagery. Pick one
 // photograph per page load; click to advance, or hold a fine pointer over the
 // image to preview it in the shared lightbox.

@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url"
 import config from "../site.config.ts"
 import {
   ABOUT_RADAR_VARIANTS,
+  TEAM_HERO_VARIANTS,
   aboutPage,
   build,
   buildIsolated,
@@ -21,13 +22,13 @@ const DIST = join(ROOT, "dist")
 const ASSET_MANIFEST = join(ROOT, ".asset-manifest.json")
 
 // These guard the drift-prone generated metadata: a wrong canonical, a broken
-// About link, or a repo-URL source-of-truth split would fail here rather than
+// Teams link, or a repo-URL source-of-truth split would fail here rather than
 // only surfacing live.
 
 test("layout emits a correct per-page canonical + social card", () => {
-  const html = layout({ title: "T", description: "D", base: "../", path: "about/", main: "" })
-  expect(html).toContain(`<link rel="canonical" href="${config.siteUrl}/about/" />`)
-  expect(html).toContain(`<meta property="og:url" content="${config.siteUrl}/about/" />`)
+  const html = layout({ title: "T", description: "D", base: "../", path: "teams/", main: "" })
+  expect(html).toContain(`<link rel="canonical" href="${config.siteUrl}/teams/" />`)
+  expect(html).toContain(`<meta property="og:url" content="${config.siteUrl}/teams/" />`)
   expect(html).toContain(`<meta property="og:image" content="${config.siteUrl}/assets/splash.png" />`)
   expect(html).toContain(`<meta name="twitter:card" content="summary_large_image" />`)
 })
@@ -43,10 +44,11 @@ test("home canonical is the bare origin with no double slash", () => {
   expect(html).toContain(`href="index.html#tools">Source</a>`)
 })
 
-test("About presents the peer teams and their supplied profiles", () => {
+test("Teams presents the peer teams and their supplied profiles", () => {
   const html = aboutPage()
-  expect(html).toContain("clean-room reimplement")
+  expect(html).toContain("containerized environments like NeuroDesk")
   expect(html).toContain("Cross-Vendor GPU Acceleration")
+  expect(html).toContain("Frictionless Community Collaboration")
   expect(html).toContain("Simplify, then add lightness")
   expect(html).toContain("- Colin Chapman")
   expect(html).toContain("Independent teams")
@@ -84,9 +86,14 @@ test("build emits the full generated-site contract (CNAME/robots/sitemap/404)", 
   expect(await read("robots.txt")).toContain(`Sitemap: ${config.siteUrl}/sitemap.xml`)
 
   const sitemap = await read("sitemap.xml")
-  for (const path of ["", "about/", ...config.projects.map((t) => `${t.slug}/`)]) {
+  for (const path of ["", "teams/", ...config.projects.map((t) => `${t.slug}/`)]) {
     expect(sitemap).toContain(`<loc>${config.siteUrl}/${path}</loc>`)
   }
+
+  const teams = await read("teams/index.html")
+  expect(teams).toContain('href="../teams/">Teams</a>')
+  expect(teams).toContain(`<link rel="canonical" href="${config.siteUrl}/teams/" />`)
+  expect(await read("about/index.html")).toContain('url=../teams/')
 
   const notFound = await read("404.html")
   expect(notFound).toContain('href="/"') // apex-root home link
@@ -295,10 +302,20 @@ test("landing hero uses every configured radar asset pair", async () => {
   }
 })
 
-test("about uses the static axial relief image", async () => {
+test("teams randomizes and cycles accent-tinted scientific image outlines", async () => {
   const html = aboutPage()
   const css = await Bun.file(join(ROOT, "assets", "site.css")).text()
-  expect(html).not.toContain("data-about-radar-variant")
-  expect(css).toContain('mask: url("T1w-axial-outline.png")')
-  expect(await Bun.file(join(ROOT, "assets", "T1w-axial-outline.png")).exists()).toBe(true)
+  expect(html).toContain(`data-team-hero-variants="${TEAM_HERO_VARIANTS.join(" ")}"`)
+  expect(html).toContain("data-team-hero-toggle")
+  expect(css).toContain('mask: var(--team-hero-mask) center / contain no-repeat')
+  for (const variant of TEAM_HERO_VARIANTS) {
+    const asset = Bun.file(
+      join(ROOT, "assets", "teams", `hero-${variant}${variant === "walnut" ? "-outline" : "-axial-outline"}.png`),
+    )
+    expect(await asset.exists()).toBe(true)
+    // Grayscale + alpha: mask intensity lives in alpha, so accent color only
+    // appears along the extracted image contours instead of as a solid block.
+    const bytes = Buffer.from(await asset.arrayBuffer())
+    expect([0, 3, 4, 6]).toContain(bytes[25])
+  }
 })

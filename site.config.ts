@@ -26,7 +26,7 @@ export type SiteConfig = {
 const config: SiteConfig = {
   title: "lightNIIng",
   tagline:
-    "High-performance processing built on truly open software—unencumbered by commercial usage restrictions or code contamination risks.",
+    "High-performance neuroimaging built for open science—designed to run anywhere and empower everyone.",
   intro:
     "Permissively open infrastructure that simplifies deployment and accelerates proven neuroimaging methods.",
   siteUrl: "https://lightniing.org",
