@@ -64,6 +64,8 @@ test("Teams presents the peer teams and their supplied profiles", () => {
   expect(html).toContain("Independent teams")
   expect(html).toContain("collaboration of equal peers")
   expect(html).toContain('data-team-grid')
+  expect(html).toContain(`data-team-hero-variants="${TEAM_HERO_VARIANTS.join(" ")}"`)
+  expect(html).toContain("data-team-hero-toggle")
   expect(html).toContain("brainchop")
   expect(html).toContain("fideus labs")
   expect(html).toContain("Neurodesk")

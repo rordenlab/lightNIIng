@@ -78,8 +78,8 @@ if (
   syncSwatches()
 })()
 
-// The Teams-page outline is decorative but can be clicked or keyboard-focused
-// to cycle through the available scientific images.
+// The About and Teams outlines are decorative but can be clicked or
+// keyboard-focused to cycle through the available scientific images.
 ;(() => {
   const hero = document.querySelector("[data-team-hero-toggle]")
   if (!hero) return

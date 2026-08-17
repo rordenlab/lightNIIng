@@ -519,12 +519,13 @@ export function teamsPage(): string {
   <section class="section teams-hero">
     <div class="container">
       <a class="back" href="../index.html">${backArrow()} Back to lightNIIng</a>
-      <div class="teams-hero__copy">
+      <div class="section__head teams-hero__head">
         <p class="section__eyebrow">The collaboration</p>
         <h1>Independent teams,<br />shared purpose.</h1>
-        <p>light<span class="brand-inline__accent">nii</span>ng is a collaboration of equal peers. Each team brings distinct expertise to a common goal: open, portable, high-performance neuroimaging infrastructure that researchers can use, inspect, and extend.</p>
       </div>
+      <p class="teams-hero__lead">light<span class="brand-inline__accent">nii</span>ng is a collaboration of equal peers. Each team brings distinct expertise to a common goal: open, portable, high-performance neuroimaging infrastructure that researchers can use, inspect, and extend.</p>
     </div>
+    <button class="about__hero-toggle" type="button" data-team-hero-toggle data-team-hero-variants="${TEAM_HERO_VARIANTS.join(" ")}" aria-label="Show another Teams image" title="Click to show another Teams image"></button>
   </section>
 
   <section class="section about-teams">
@@ -543,6 +544,7 @@ ${teams}
     base: "../",
     path: "teams/",
     main,
+    headExtra: `<script>${TEAM_HERO_VARIANT_SCRIPT}</script>`,
   })
 }
 
