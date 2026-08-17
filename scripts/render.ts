@@ -247,9 +247,10 @@ const ACCENTS = ["orange", "sage", "garnet", "periwinkle", "violet", "indigo"]
 // The floating nav ribbon (top-left): brand + three links. On the home page an
 // accent "drawer" slides out of the ribbon's right edge to open the processing
 // overview in the lightbox.
-function topbar(base: string): string {
+function topbar(base: string, path: string): string {
   const sep = '<span class="topbar__sep" aria-hidden="true">|</span>'
   const home = base === ""
+  const current = (target: string) => (path === target ? ' aria-current="page"' : "")
   const peek = home
     ? `\n    <button class="topbar__peek" type="button" data-lightbox-src="${base}assets/overview.svg" data-lightbox-alt="Overview of the lightNIIng functional imaging workflow">${MAXIMIZE}<span>See Overview</span></button>`
     : ""
@@ -260,9 +261,9 @@ function topbar(base: string): string {
       ${sep}
       <a class="topnav-link" href="${base}index.html#projects">Projects</a>
       ${sep}
-      <a class="topnav-link" href="${base}teams/">Teams</a>
+      <a class="topnav-link" href="${base}teams/"${current("teams/")}>Teams</a>
       ${sep}
-      <a class="topnav-link" href="${base}index.html#tools">Source</a>
+      <a class="topnav-link" href="${base}about/"${current("about/")}>About</a>
     </header>${peek}
   </div>`
 }
@@ -297,7 +298,7 @@ export type LayoutOpts = {
 }
 
 export function layout(o: LayoutOpts): string {
-  const pageClass = o.path === "" ? "page-home" : o.path === "teams/" ? "page-about" : "page-tutorial"
+  const pageClass = o.path === "" ? "page-home" : o.path === "teams/" || o.path === "about/" ? "page-about" : "page-tutorial"
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -323,7 +324,7 @@ export function layout(o: LayoutOpts): string {
 <script>${HEAD_THEME_SCRIPT}</script>
 ${o.headExtra ?? ""}</head>
 <body class="${pageClass}">
-${topbar(o.base)}
+${topbar(o.base, o.path)}
 <main>
 ${o.main}
 </main>

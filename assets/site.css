@@ -720,6 +720,10 @@ a:hover {
   transition: color 0.15s;
 }
 
+.topnav-link[aria-current="page"] {
+  color: var(--accent);
+}
+
 .topbar__sep {
   font-size: 0.7rem;
   font-weight: 400;
@@ -1762,6 +1766,60 @@ a:hover {
   padding-block: clamp(5rem, 7vw, 6.8rem) clamp(3.5rem, 6vw, 5.5rem);
 }
 
+.teams-hero {
+  position: relative;
+  padding-block: clamp(5rem, 8vw, 8rem) clamp(3.4rem, 5vw, 5.2rem);
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.teams-hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: clamp(1.2rem, 4vw, 4rem);
+  width: 1px;
+  background: var(--border-subtle);
+  pointer-events: none;
+}
+
+.teams-hero .back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4ch;
+  margin-bottom: clamp(2.3rem, 5vw, 4.5rem);
+  color: var(--fg-faint);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.teams-hero .back:hover { color: var(--accent); }
+
+.teams-hero__copy {
+  max-width: 56rem;
+}
+
+.teams-hero h1 {
+  max-width: 12ch;
+  font-size: clamp(3rem, 7vw, 6.4rem);
+  font-weight: 630;
+  line-height: 0.94;
+  letter-spacing: -0.06em;
+  text-wrap: balance;
+}
+
+.teams-hero__copy > p:last-child {
+  max-width: 61ch;
+  margin-top: 1.5rem;
+  color: var(--fg-muted);
+  font-size: clamp(1.02rem, 1.5vw, 1.18rem);
+  line-height: 1.68;
+}
+
 .about__radar {
   --about-radar-angle: 0deg;
   --about-radar-speed: 14.3s;
@@ -2038,56 +2096,45 @@ a:hover {
    the same visual weight and its position is shuffled on each page load. */
 .about-teams {
   padding-block: clamp(3.4rem, 5.5vw, 5.6rem);
-}
-
-.about-teams .section__head {
-  margin-bottom: clamp(2rem, 3.5vw, 3.2rem);
-}
-
-.about-teams .section__head h2 {
-  max-width: 12ch;
-}
-
-.about-teams .section__lead {
-  max-width: 68ch;
-  line-height: 1.68;
+  background: color-mix(in srgb, var(--accent) 4%, var(--bg-elevated));
+  border-top: 1px solid var(--border-subtle);
 }
 
 .about-teams__grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1rem, 2vw, 1.65rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 0.75rem;
 }
 
 .team-card {
   display: grid;
-  grid-template-columns: minmax(8rem, 0.34fr) minmax(0, 1fr);
-  gap: clamp(1rem, 2vw, 1.8rem);
-  min-height: 100%;
-  padding: clamp(1.25rem, 2.5vw, 2rem);
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: 0.9rem;
+  min-height: 7rem;
+  padding: 1rem 1.1rem;
   border: 1px solid var(--border-strong);
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--bg-elevated) 72%, transparent);
+  border-radius: 10px;
+  color: var(--fg-base);
+  background: var(--bg-elevated);
+  transition: border-color 150ms ease, transform 150ms ease;
 }
 
-:root[data-theme="light"] .team-card {
-  background: var(--bg-base);
+.team-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
 }
 
-.team-card__identity {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-}
+.team-card__content { min-width: 0; }
 
 .team-card__logo {
   display: grid;
   place-items: center;
-  width: 100%;
+  width: 4.5rem;
+  height: 4.5rem;
   aspect-ratio: 1;
-  padding: 0.8rem;
+  padding: 0.55rem;
   border: 1px solid var(--border-subtle);
-  border-radius: 10px;
+  border-radius: 7px;
   background: color-mix(in srgb, #fff 90%, var(--accent) 10%);
   color: inherit;
   cursor: zoom-in;
@@ -2116,14 +2163,16 @@ a:hover {
 .team-card h3 {
   margin: 0;
   color: var(--fg-base);
-  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  font-size: 0.94rem;
   letter-spacing: -0.02em;
 }
 
 .team-card__prose {
+  margin-top: 0.35rem;
   color: var(--fg-muted);
-  font-size: 0.9rem;
-  line-height: 1.62;
+  font-size: 0.84rem;
+  font-weight: 450;
+  line-height: 1.45;
 }
 
 .team-card__prose > :first-child {
@@ -2135,7 +2184,7 @@ a:hover {
 }
 
 .team-card__prose h2 {
-  margin: 1.25rem 0 0.45rem;
+  margin: 1rem 0 0.35rem;
   color: var(--fg-base);
   font-size: 0.72rem;
   font-family: var(--font-mono);
@@ -2348,9 +2397,6 @@ a:hover {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .team-card {
-    grid-template-columns: minmax(7rem, 0.28fr) minmax(0, 1fr);
-  }
 }
 
 @media (max-width: 560px) {
@@ -2413,20 +2459,6 @@ a:hover {
 
   .webapp-directory {
     grid-template-columns: 1fr;
-  }
-
-  .team-card {
-    grid-template-columns: 1fr;
-  }
-
-  .team-card__identity {
-    display: grid;
-    grid-template-columns: 5.5rem 1fr;
-    align-items: center;
-  }
-
-  .team-card__logo {
-    width: 5.5rem;
   }
 
   .about__fronts > div {

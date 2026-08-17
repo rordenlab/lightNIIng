@@ -14,6 +14,7 @@ import {
   findMissingCssAssets,
   findMissingTutorialImages,
   findUnpromotedDistAssets,
+  teamsPage,
 } from "./build.ts"
 import { layout } from "./render.ts"
 
@@ -41,16 +42,25 @@ test("home canonical is the bare origin with no double slash", () => {
   expect(html).toContain(`data-lightbox-src="assets/overview.svg"`)
   expect(html).toContain("See Overview")
   expect(html).not.toContain("View NiiVue")
-  expect(html).toContain(`href="index.html#tools">Source</a>`)
+  expect(html).not.toContain(`href="index.html#tools">Source</a>`)
 })
 
-test("Teams presents the peer teams and their supplied profiles", () => {
+test("About presents lightNIIng's mission and commitments", () => {
   const html = aboutPage()
   expect(html).toContain("containerized environments like NeuroDesk")
   expect(html).toContain("Cross-Vendor GPU Acceleration")
   expect(html).toContain("Frictionless Community Collaboration")
   expect(html).toContain("Simplify, then add lightness")
   expect(html).toContain("- Colin Chapman")
+  expect(html).toContain("About lightNIIng")
+  expect(html).not.toContain('data-team-grid')
+})
+
+test("Teams presents the peer teams and their supplied profiles", () => {
+  const html = teamsPage()
+  expect(html).toContain("Independent teams")
+  expect(html).toContain("shared purpose")
+  expect(html).not.toContain('section--tools about-teams')
   expect(html).toContain("Independent teams")
   expect(html).toContain("collaboration of equal peers")
   expect(html).toContain('data-team-grid')
@@ -86,14 +96,16 @@ test("build emits the full generated-site contract (CNAME/robots/sitemap/404)", 
   expect(await read("robots.txt")).toContain(`Sitemap: ${config.siteUrl}/sitemap.xml`)
 
   const sitemap = await read("sitemap.xml")
-  for (const path of ["", "teams/", ...config.projects.map((t) => `${t.slug}/`)]) {
+  for (const path of ["", "about/", "teams/", ...config.projects.map((t) => `${t.slug}/`)]) {
     expect(sitemap).toContain(`<loc>${config.siteUrl}/${path}</loc>`)
   }
 
   const teams = await read("teams/index.html")
-  expect(teams).toContain('href="../teams/">Teams</a>')
+  expect(teams).toContain('href="../teams/" aria-current="page">Teams</a>')
   expect(teams).toContain(`<link rel="canonical" href="${config.siteUrl}/teams/" />`)
-  expect(await read("about/index.html")).toContain('url=../teams/')
+  const about = await read("about/index.html")
+  expect(about).toContain('href="../about/" aria-current="page">About</a>')
+  expect(about).toContain(`<link rel="canonical" href="${config.siteUrl}/about/" />`)
 
   const notFound = await read("404.html")
   expect(notFound).toContain('href="/"') // apex-root home link
@@ -302,7 +314,7 @@ test("landing hero uses every configured radar asset pair", async () => {
   }
 })
 
-test("teams randomizes and cycles accent-tinted scientific image outlines", async () => {
+test("About randomizes and cycles accent-tinted scientific image outlines", async () => {
   const html = aboutPage()
   const css = await Bun.file(join(ROOT, "assets", "site.css")).text()
   expect(html).toContain(`data-team-hero-variants="${TEAM_HERO_VARIANTS.join(" ")}"`)

@@ -434,23 +434,21 @@ function teamCard(team: (typeof TEAMS)[number]): string {
   const logo = `<img src="../assets/teams/${team.slug}/${png}" width="${team.png.width}" height="${team.png.height}" alt="${escapeHtml(team.name)} logo" loading="lazy" decoding="async" />`
   return `
         <article class="team-card team-card--${team.slug}">
-          <div class="team-card__identity">
-            <button class="team-card__logo" type="button" data-lightbox-src="../assets/teams/${team.slug}/peak.${team.peak}" data-lightbox-alt="${escapeHtml(team.name)} team image" aria-label="View ${escapeHtml(team.name)} team image">${logo}</button>
+          <button class="team-card__logo" type="button" data-lightbox-src="../assets/teams/${team.slug}/peak.${team.peak}" data-lightbox-alt="${escapeHtml(team.name)} team image" aria-label="View ${escapeHtml(team.name)} team image">${logo}</button>
+          <div class="team-card__content">
             <h3>${escapeHtml(team.name)}</h3>
+            <div class="team-card__prose">${profile}</div>
           </div>
-          <div class="team-card__prose">${profile}</div>
         </article>`
 }
 
 export function aboutPage(): string {
-  const teams = TEAMS.map(teamCard).join("")
-
   const main = `
   <section class="section about">
     <div class="container">
       <a class="back" href="../index.html">${backArrow()} Back to lightNIIng</a>
       <div class="section__head">
-        <p class="section__eyebrow">Teams</p>
+        <p class="section__eyebrow">About lightNIIng</p>
         <h2>Accelerated code, accessible science</h2>
       </div>
       <div class="about__prose">
@@ -482,23 +480,7 @@ export function aboutPage(): string {
       <cite>- Colin Chapman</cite>
     </blockquote>
     <button class="about__hero-toggle" type="button" data-team-hero-toggle data-team-hero-variants="${TEAM_HERO_VARIANTS.join(" ")}" aria-label="Show another Teams image" title="Click to show another image"></button>
-  </section>
-
-  <section class="section section--tools about-teams">
-    <div class="container">
-      <div class="section__head">
-        <div>
-          <p class="section__eyebrow">The collaboration</p>
-          <h2>Independent teams,<br />shared purpose.</h2>
-        </div>
-        <p class="section__lead">light<span class="brand-inline__accent">nii</span>ng is a collaboration of equal peers. Each team brings distinct expertise to a common goal: open, portable, high-performance neuroimaging infrastructure that researchers can use, inspect, and extend.</p>
-      </div>
-      <div class="about-teams__grid" data-team-grid>
-${teams}
-      </div>
-    </div>
-  </section>
-  <script>${TEAM_SHUFFLE_SCRIPT}</script>`
+  </section>`
 
   // schema.org metadata — machine-readable provenance (author, funder, license)
   // for search engines and reputation crawlers.
@@ -517,17 +499,50 @@ ${teams}
   }
 
   return layout({
-    title: `Teams — ${config.title}`,
+    title: `About — ${config.title}`,
     description:
       `${config.title} is permissively open NeuroImaging Infrastructure focused on simpler deployment, ` +
       "high performance, and visible credit for foundational tools.",
     base: "../",
-    path: "teams/",
+    path: "about/",
     main,
     // Escape `<` so a value can never break out of the <script> context (JSON
     // itself doesn't neutralize a literal `</script>`). All values are trusted
     // today; this keeps it safe if a Markdown-derived field is ever added.
     headExtra: `<script>${TEAM_HERO_VARIANT_SCRIPT}</script><script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}</script>`,
+  })
+}
+
+export function teamsPage(): string {
+  const teams = TEAMS.map(teamCard).join("")
+  const main = `
+  <section class="section teams-hero">
+    <div class="container">
+      <a class="back" href="../index.html">${backArrow()} Back to lightNIIng</a>
+      <div class="teams-hero__copy">
+        <p class="section__eyebrow">The collaboration</p>
+        <h1>Independent teams,<br />shared purpose.</h1>
+        <p>light<span class="brand-inline__accent">nii</span>ng is a collaboration of equal peers. Each team brings distinct expertise to a common goal: open, portable, high-performance neuroimaging infrastructure that researchers can use, inspect, and extend.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section about-teams">
+    <div class="container">
+      <div class="about-teams__grid" data-team-grid>
+${teams}
+      </div>
+    </div>
+  </section>
+  <script>${TEAM_SHUFFLE_SCRIPT}</script>`
+
+  return layout({
+    title: `Teams — ${config.title}`,
+    description:
+      `The independent teams collaborating through ${config.title} to make neuroimaging infrastructure open, portable, and fast.`,
+    base: "../",
+    path: "teams/",
+    main,
   })
 }
 
@@ -585,13 +600,9 @@ async function buildInto(outputRoot: string, canonical: boolean): Promise<void> 
 
   await Bun.write(join(outputRoot, "index.html"), landingPage())
   await mkdir(join(outputRoot, "teams"), { recursive: true })
-  await Bun.write(join(outputRoot, "teams", "index.html"), aboutPage())
-  // Preserve inbound links to the former route while making /teams/ canonical.
+  await Bun.write(join(outputRoot, "teams", "index.html"), teamsPage())
   await mkdir(join(outputRoot, "about"), { recursive: true })
-  await Bun.write(
-    join(outputRoot, "about", "index.html"),
-    '<!doctype html><meta http-equiv="refresh" content="0; url=../teams/"><link rel="canonical" href="../teams/"><script>location.replace("../teams/")</script>',
-  )
+  await Bun.write(join(outputRoot, "about", "index.html"), aboutPage())
   await Bun.write(join(outputRoot, "404.html"), await notFoundPage())
   // GitHub Pages: skip Jekyll so `assets/` etc. are served verbatim.
   await Bun.write(join(outputRoot, ".nojekyll"), "")
@@ -602,7 +613,7 @@ async function buildInto(outputRoot: string, canonical: boolean): Promise<void> 
 
   // Crawlability signals: a robots.txt + sitemap help reputation/search crawlers
   // discover and categorize the site as legitimate content (see aboutPage).
-  const urls = ["", "teams/", ...config.projects.map((t) => `${t.slug}/`)]
+  const urls = ["", "about/", "teams/", ...config.projects.map((t) => `${t.slug}/`)]
   await Bun.write(
     join(outputRoot, "robots.txt"),
     `User-agent: *\nAllow: /\nSitemap: ${config.siteUrl}/sitemap.xml\n`,
@@ -659,6 +670,6 @@ if (import.meta.main) {
   const t0 = performance.now()
   await build()
   const ms = Math.round(performance.now() - t0)
-  const pages = config.projects.length + 3 // home + about + 404 + one per project
+  const pages = config.projects.length + 4 // home + about + teams + 404 + one per project
   console.log(`✓ Built ${pages} pages → dist/  (${ms}ms)`)
 }
