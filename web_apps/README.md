@@ -15,26 +15,56 @@ Small, focused tools can be combined into workflows that are easier to inspect, 
 
 ## Explore the apps
 
-<div class="webapp-directory">
-  <a href="https://brain2print.org/"><strong>brain2print</strong><span>Segment NIfTI images and create printable 3D brain meshes in the browser.</span></a>
-  <a href="https://brainchop.org/"><strong>brainchop</strong><span>AI-powered brain segmentation that runs on local images in the browser.</span></a>
-  <a href="https://browserqc.org/"><strong>browserQC</strong><span>Review neuroimaging data and support quality-control decisions in the browser.</span></a>
-  <a href="https://calmar.neurodesk.org/"><strong>CALMaR</strong><span>Automated stroke-lesion mapping, connectivity analysis, and reporting.</span></a>
-  <a href="https://niivue.github.io/deface/"><strong>Deface</strong><span>Remove facial features from structural images before sharing.</span></a>
-  <a href="https://dicompare.neurodesk.org/"><strong>dicompare</strong><span>Compare, validate, and share DICOM acquisition protocols across sites.</span></a>
-  <a href="https://tee-ar-ex.github.io/dwi2trx/"><strong>dwi2trx</strong><span>Prepare diffusion MRI tractography for interactive exploration and 3D output.</span></a>
-  <a href="https://thomshaw92.github.io/Easy-MP2RAGE-T1-Map/"><strong>Easy MP2RAGE T1 Map</strong><span>Create quantitative T1 maps from MP2RAGE acquisitions.</span></a>
-  <a href="https://www.edgereg.org/"><strong>EdgeReg</strong><span>Perform local rigid and affine MRI registration directly in your browser.</span></a>
-  <a href="https://musclemap.neurodesk.org/"><strong>MuscleMap</strong><span>Segment and review whole-body or regional muscle MRI data.</span></a>
-  <a href="https://neurodesk.org/edu/examples/functional_imaging/AFNI_preprocessing_only.html"><strong>NeurodeskEDU</strong><span>Learn reproducible AFNI functional-imaging preprocessing through an interactive example.</span></a>
-  <a href="https://niivue.github.io/niivue-niimath/"><strong>niimath</strong><span>Run compact image-processing commands with an interactive local viewer.</span></a>
-  <a href="https://niivue.github.io/niinav/"><strong>niiNav</strong><span>Explore neuroimaging volumes and surfaces with a lightweight web viewer.</span></a>
-  <a href="https://qmrlab.org/qmrust/app/"><strong>qMRust</strong><span>Use quantitative MRI methods from qMRLab in a browser-native app.</span></a>
-  <a href="https://qsmbly.neurodesk.org/"><strong>QSMbly</strong><span>Run a guided quantitative susceptibility mapping workflow from DICOM or NIfTI data.</span></a>
-  <a href="https://seedseg.neurodesk.org/"><strong>SeedSeg</strong><span>Segment intraprostatic gold fiducial markers in prostate MRI.</span></a>
-  <a href="https://sct.neurodesk.org/"><strong>Spinal Cord Toolbox</strong><span>Use browser-based spinal cord MRI segmentation workflows.</span></a>
-  <a href="https://vesselboost.neurodesk.org/"><strong>VesselBoost</strong><span>Segment blood vessels from MRI angiography with guided local inference.</span></a>
-</div>
+Tools from our team and others that showcase how our building blocks can be combined for a wide range of uses.
+
+- [brain2print](https://brain2print.org/): Segment NIfTI images and create printable 3D brain meshes in the browser.
+  _ITK-Wasm / niimath / NiiVue_
+- [brainchop](https://brainchop.org/): AI-powered brain segmentation that runs on local images in the browser.
+  _brainchop / NiiVue_
+- [browserQC](https://browserqc.org/): Review neuroimaging data and support quality-control decisions in the browser.
+  _brainchop / dcm2niix / niimath / NiiVue_
+- [CALMaR](https://calmar.neurodesk.org/): Automated stroke-lesion mapping, connectivity analysis, and reporting.
+  _NiiVue_
+- [Deface](https://niivue.github.io/deface/): Remove facial features from structural images before sharing.
+  _brainchop / niimath / NiiVue_
+- [dicompare](https://dicompare.neurodesk.org/): Compare, validate, and share DICOM acquisition protocols across sites.
+  _none listed_
+- [dwi2trx](https://tee-ar-ex.github.io/dwi2trx/): Prepare diffusion MRI tractography for interactive exploration and 3D output.
+  _brainchop / dcm2niix / GPUstreamlines / niimath ? NiiVue_
+- [Easy MP2RAGE T1 Map](https://thomshaw92.github.io/Easy-MP2RAGE-T1-Map/): Create quantitative T1 maps from MP2RAGE acquisitions.
+  _NiiVue_
+- [EdgeReg](https://www.edgereg.org/): Perform local rigid and affine MRI registration directly in your browser.
+  _brainchop / niimath / NiiVue_
+- [MuscleMap](https://musclemap.neurodesk.org/): Segment and review whole-body or regional muscle MRI data.
+  _NiiVue_
+- [NeurodeskEDU](https://neurodesk.org/edu/examples/functional_imaging/AFNI_preprocessing_only.html): Learn reproducible AFNI functional-imaging preprocessing through an interactive example.
+  _NiiVue_
+- [niimath](https://niivue.github.io/niivue-niimath/): Run compact image-processing commands with an interactive local viewer.
+  _niimath / NiiVue_
+- [niiNav](https://niivue.github.io/niinav/): Explore neuroimaging volumes and surfaces with a lightweight web viewer.
+  _NiiVue_
+- [qMRust](https://qmrlab.org/qmrust/app/): Use quantitative MRI methods from qMRLab in a browser-native app.
+  _NiiVue_
+- [QSMbly](https://qsmbly.neurodesk.org/): Run a guided quantitative susceptibility mapping workflow from DICOM or NIfTI data.
+  _NiiVue / QSM-WASM_
+- [SeedSeg](https://seedseg.neurodesk.org/): Segment intraprostatic gold fiducial markers in prostate MRI.
+  _NiiVue_
+- [Spinal Cord Toolbox](https://sct.neurodesk.org/): Use browser-based spinal cord MRI segmentation workflows.
+  _NiiVue_
+- [VesselBoost](https://vesselboost.neurodesk.org/): Segment blood vessels from MRI angiography with guided local inference.
+  _NiiVue_
+
+## Core building blocks
+
+These reusable modules provide the capabilities leveraged by the web apps.
+
+- [brainchop](https://github.com/neuroneural/brainchop) For brain extraction, segmentation and parcelation.
+- [dcm2niix](https://github.com/rordenlab/dcm2niix) DICOM to NIfTI image conversion.
+- [GPUstreamlines](https://github.com/dipy/GPUStreamlines) Converts voxels to tracts.
+- [ITK-Wasm](https://github.com/InsightSoftwareConsortium/itk-wasm) Provides access to this legendary image processing library.
+- [niimath](https://github.com/rordenlab/niimath) High performance image processing.
+- [NiiVue](https://github.com/niivue/niivue) Visualization of voxels, meshes, connectomes and streamlines.
+- [QSM-WASM](https://github.com/astewartau/qsmbly/blob/main/rust-wasm/src/lib.rs) Quantifies of susceptibility weighted imaging.
 
 ## References
 

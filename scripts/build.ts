@@ -240,9 +240,9 @@ function landingPage(): string {
       <div class="section__head">
         <div>
           <p class="section__eyebrow">Already in the field</p>
-          <h2>Proven tools,<br />open foundations.</h2>
+          <h2>Portable components,<br />practical science.</h2>
         </div>
-        <p class="section__lead">Permissively open tools for conversion, visualization, computation, extraction, curation, and tractography.</p>
+        <p class="section__lead">Modular building blocks that bring established neuroimaging capabilities to more people, platforms, and workflows.</p>
       </div>
       <div class="tools">${tools}</div>
     </div>

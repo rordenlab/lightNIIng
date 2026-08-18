@@ -90,3 +90,27 @@ test("image references include lead and panel figures", () => {
 `)
   expect(imageRefs).toEqual(["lead.png", "step.png"])
 })
+
+test("the Web Apps Markdown list renders as the app directory", () => {
+  const { panelsHtml } = mdToPanels(`# Web Apps
+## Explore the apps
+
+- [brain2print](https://brain2print.org/): Make printable brain meshes.
+  _ITK-Wasm | niimath | NiiVue_
+`)
+  expect(panelsHtml).toContain('<ul class="webapp-directory">')
+  expect(panelsHtml).toContain('<strong>brain2print</strong>')
+  expect(panelsHtml).toContain('<small>ITK-Wasm | niimath | NiiVue</small>')
+  expect(panelsHtml).not.toContain("<em>ITK-Wasm")
+})
+
+test("the core building-block list renders as compact linked chips", () => {
+  const { panelsHtml } = mdToPanels(`# Web Apps
+## Core building blocks
+
+- [NiiVue](https://github.com/niivue/niivue) visualization of voxels and meshes.
+`)
+  expect(panelsHtml).toContain('<ul class="webapp-core">')
+  expect(panelsHtml).toContain('<strong>NiiVue</strong>')
+  expect(panelsHtml).toContain('<span>visualization of voxels and meshes.</span>')
+})

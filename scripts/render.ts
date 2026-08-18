@@ -151,6 +151,41 @@ function headingHtml(value: string): string {
   return escapeHtml(value)
 }
 
+/**
+ * The Web Apps page is authored as a normal Markdown list. Its consistently
+ * structured items are promoted to the existing visual directory at render
+ * time, keeping the source pleasant to read in GitHub and other MD viewers.
+ */
+function webAppDirectoryHtml(tok: Token): string | null {
+  if (tok.type !== "list") return null
+  const list = tok as Tokens.List
+  const apps = list.items.map((item) => {
+    const match = item.text.match(
+      /^\[([^\]]+)\]\(([^\s)]+)\):\s*([^\n]+)\n\s*_([^_]+)_\s*$/,
+    )
+    if (!match) return null
+    const [, name, href, description, dependencies] = match
+    return `<li><a href="${escapeHtml(href)}"><strong>${escapeHtml(name)}</strong><span>${escapeHtml(description)}</span><small>${escapeHtml(dependencies.trim())}</small></a></li>`
+  })
+  if (apps.some((app) => app === null)) return null
+  return `<ul class="webapp-directory">${apps.join("")}</ul>`
+}
+
+/** Render the reusable modules from a conventional Markdown link list. */
+function webAppCoreHtml(tok: Token): string | null {
+  if (tok.type !== "list") return null
+  const list = tok as Tokens.List
+  const modules = list.items.map((item) => {
+    const match = item.text.match(/^\[([^\]]+)\]\(([^\s)]+)\)(?:\s+(.+))?\s*$/)
+    if (!match) return null
+    const [, name, href, description] = match
+    const detail = description ? `<span>${escapeHtml(description.trim())}</span>` : ""
+    return `<li><a href="${escapeHtml(href)}"><strong>${escapeHtml(name)}</strong>${detail}</a></li>`
+  })
+  if (modules.some((module) => module === null)) return null
+  return `<ul class="webapp-core">${modules.join("")}</ul>`
+}
+
 
 function renderSection(
   sec: { heading: Tokens.Heading; body: Token[] },
@@ -174,6 +209,22 @@ function renderSection(
   let mediaImg: Tokens.Image | null = null
 
   for (const tok of sec.body) {
+    if (/^explore the apps$/i.test(sec.heading.text.trim())) {
+      const directory = webAppDirectoryHtml(tok)
+      if (directory) {
+        flush()
+        parts.push(directory)
+        continue
+      }
+    }
+    if (/^core building blocks$/i.test(sec.heading.text.trim())) {
+      const modules = webAppCoreHtml(tok)
+      if (modules) {
+        flush()
+        parts.push(modules)
+        continue
+      }
+    }
     const imgs = paragraphImages(tok)
     if (imgs?.length) {
       let rest = imgs

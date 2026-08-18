@@ -394,25 +394,36 @@ a:hover {
   font-weight: 600;
 }
 
-.webapp-directory {
+.prose .webapp-directory,
+.prose .webapp-core {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
   gap: 0.75rem;
   max-width: none;
   margin-top: 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.webapp-directory li,
+.webapp-core li {
+  min-width: 0;
 }
 
 /* Web-app tiles benefit from the full responsive canvas; prose pages retain
    the narrower reading measure established for tutorials. */
-.container:has(.webapp-directory) {
+.container:has(.webapp-directory),
+.container:has(.webapp-core) {
   max-width: var(--maxw);
 }
 
-.panel:has(.webapp-directory) .prose {
+.panel:has(.webapp-directory) .prose,
+.panel:has(.webapp-core) .prose {
   max-width: none;
 }
 
-.webapp-directory a {
+.webapp-directory a,
+.webapp-core a {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -425,20 +436,37 @@ a:hover {
   transition: border-color 150ms ease, transform 150ms ease;
 }
 
-.webapp-directory a:hover {
+.webapp-directory a:hover,
+.webapp-core a:hover {
   border-color: var(--accent);
+  background: var(--accent-soft);
   transform: translateY(-2px);
 }
 
-.webapp-directory strong {
+.webapp-directory strong,
+.webapp-core strong {
   font-size: 0.94rem;
 }
 
-.webapp-directory span {
+.webapp-directory span,
+.webapp-core span {
   color: var(--fg-muted);
   font-size: 0.84rem;
   font-weight: 450;
   line-height: 1.45;
+}
+
+.webapp-directory small {
+  display: block;
+  margin-top: auto;
+  padding-top: 0.55rem;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 650;
+  letter-spacing: 0.035em;
+  line-height: 1.35;
+  text-align: right;
 }
 
 .webapps-modularity {
@@ -1434,6 +1462,13 @@ a:hover {
   max-width: var(--maxw-text);
 }
 
+/* The Web Apps directory is a responsive index, not long-form prose. Keep
+   its panels on the full site canvas so the card grids can form columns. */
+.container:has(> .panels):has(.webapp-directory),
+.container:has(> .panels):has(.webapp-core) {
+  max-width: var(--maxw);
+}
+
 .tut-hero {
   max-width: var(--maxw);
 }
@@ -2167,6 +2202,21 @@ a:hover {
   width: auto;
   height: auto;
   object-fit: contain;
+}
+
+/* Square and landscape marks fill the available inline space. Portrait marks
+   use the block axis instead, leaving the same visual margin in every logo
+   button. */
+.team-card--brainchop .team-card__logo img,
+.team-card--neurodesk .team-card__logo img,
+.team-card--niivue .team-card__logo img {
+  width: 100%;
+  height: auto;
+}
+
+.team-card--fideus .team-card__logo img {
+  width: auto;
+  height: 78%;
 }
 
 .team-card h3 {
