@@ -1,5 +1,3 @@
-## About
-
 The brainchop team developed the lean [MeshNet](https://ieeexplore.ieee.org/document/7966333) convolutional neural network for volumetric segmentation. Its efficient design enables these methods to run across a wide range of environments, including locally in web browsers using WebGPU. Applications include [parcellation and segmentation](https://joss.theoj.org/papers/10.21105/joss.05098), [brain extraction](https://pubmed.ncbi.nlm.nih.gov/42331200/), and [lesion detection](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10981054).
 
 ## Team contact

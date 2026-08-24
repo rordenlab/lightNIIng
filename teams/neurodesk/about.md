@@ -5,4 +5,4 @@ The [Neurodesk](https://pubmed.ncbi.nlm.nih.gov/38191935/) team develops open-so
 
 ## Support
 
-- [CZI (313306/Z/24/Z)](https://chanzuckerberg.com/eoss/proposals/neurodesk-a-platform-for-reproducible-neuroimaging/)
+- [CZI 313306/Z/24/Z](https://chanzuckerberg.com/eoss/proposals/neurodesk-a-platform-for-reproducible-neuroimaging/)
