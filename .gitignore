@@ -1,4 +1,5 @@
 node_modules/
 dist/
+todo/
 .asset-manifest.json
 **/.DS_Store

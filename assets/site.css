@@ -2208,13 +2208,15 @@ a:hover {
    use the block axis instead, leaving the same visual margin in every logo
    button. */
 .team-card--brainchop .team-card__logo img,
+.team-card--dipy .team-card__logo img,
 .team-card--neurodesk .team-card__logo img,
 .team-card--niivue .team-card__logo img {
   width: 100%;
   height: auto;
 }
 
-.team-card--fideus .team-card__logo img {
+.team-card--fideus .team-card__logo img,
+.team-card--pennlinc .team-card__logo img {
   width: auto;
   height: 78%;
 }

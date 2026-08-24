@@ -413,6 +413,7 @@ const TEAM_SHUFFLE_SCRIPT = `(function(){var grid=document.querySelector('[data-
 
 const TEAMS = [
   { slug: "brainchop", name: "brainchop", peak: "jpg", png: { width: 336, height: 336 } },
+  { slug: "dipy", name: "DIPY", peak: "png", png: { width: 336, height: 92 } },
   { slug: "fideus", name: "fideus labs", peak: "png", png: { width: 266, height: 336 } },
   // The supplied SVG's white wordmark does not stay legible on all themes.
   // Use the contrast-corrected PNG in the directory; retain the SVG in source.
@@ -420,6 +421,7 @@ const TEAMS = [
   // The legacy SVG has substantial empty viewBox space; use its full-area PNG
   // in the directory while retaining the SVG alongside the team's source files.
   { slug: "niivue", name: "NiiVue", peak: "jpg", png: { width: 336, height: 336 } },
+  { slug: "pennlinc", name: "PennLINC", peak: "jpg", png: { width: 282, height: 336 } },
 ] as const
 
 function teamCard(team: (typeof TEAMS)[number]): string {
