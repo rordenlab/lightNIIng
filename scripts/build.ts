@@ -421,6 +421,7 @@ const TEAMS = [
   // The legacy SVG has substantial empty viewBox space; use its full-area PNG
   // in the directory while retaining the SVG alongside the team's source files.
   { slug: "niivue", name: "NiiVue", peak: "jpg", png: { width: 336, height: 336 } },
+  { slug: "nipreps", name: "NiPreps", peak: "png", png: { width: 336, height: 335 } },
   { slug: "pennlinc", name: "PennLINC", peak: "jpg", png: { width: 282, height: 336 } },
 ] as const
 

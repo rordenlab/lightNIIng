@@ -2210,7 +2210,8 @@ a:hover {
 .team-card--brainchop .team-card__logo img,
 .team-card--dipy .team-card__logo img,
 .team-card--neurodesk .team-card__logo img,
-.team-card--niivue .team-card__logo img {
+.team-card--niivue .team-card__logo img,
+.team-card--nipreps .team-card__logo img {
   width: 100%;
   height: auto;
 }

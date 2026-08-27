@@ -71,6 +71,7 @@ test("Teams presents the peer teams and their supplied profiles", () => {
   expect(html).toContain("fideus labs")
   expect(html).toContain("Neurodesk")
   expect(html).toContain("NiiVue")
+  expect(html).toContain("NiPreps")
   expect(html).toContain("PennLINC")
   expect(html).toContain("../assets/teams/neurodesk/logo-dark.png")
   expect(html).toContain("../assets/teams/fideus/logo.png")
