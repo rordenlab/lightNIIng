@@ -2216,6 +2216,8 @@ a:hover {
   height: auto;
 }
 
+.team-card--cobralab .team-card__logo img,
+.team-card--dnp .team-card__logo img,
 .team-card--fideus .team-card__logo img,
 .team-card--pennlinc .team-card__logo img {
   width: auto;

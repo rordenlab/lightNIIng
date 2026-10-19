@@ -413,7 +413,9 @@ const TEAM_SHUFFLE_SCRIPT = `(function(){var grid=document.querySelector('[data-
 
 const TEAMS = [
   { slug: "brainchop", name: "brainchop", peak: "jpg", png: { width: 336, height: 336 } },
+  { slug: "cobralab", name: "CoBrALab", peak: "png", png: { width: 286, height: 336 } },
   { slug: "dipy", name: "DIPY", peak: "png", png: { width: 336, height: 92 } },
+  { slug: "dnp", name: "DNP", peak: "png", png: { width: 281, height: 336 } },
   { slug: "fideus", name: "fideus labs", peak: "png", png: { width: 266, height: 336 } },
   // The supplied SVG's white wordmark does not stay legible on all themes.
   // Use the contrast-corrected PNG in the directory; retain the SVG in source.

@@ -68,6 +68,8 @@ test("Teams presents the peer teams and their supplied profiles", () => {
   expect(html).toContain("data-team-hero-toggle")
   expect(html).toContain("brainchop")
   expect(html).toContain("DIPY")
+  expect(html).toContain("CoBrALab")
+  expect(html).toContain("DNP")
   expect(html).toContain("fideus labs")
   expect(html).toContain("Neurodesk")
   expect(html).toContain("NiiVue")
