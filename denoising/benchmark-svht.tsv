@@ -1,0 +1,9 @@
+# type: horizontal
+# title: Diffusion denoising
+# subtitle: 140×140×92 × 297 volumes (speedup, higher is better)
+# source: https://github.com/rordenlab/svht_denoise#benchmark
+# unit: x
+Tool	Runtime (speedup)
+MRtrix3 dwidenoise	1
+dwidenoise2	2.9
+svht_denoise*	7.3

@@ -69,6 +69,13 @@ const config: SiteConfig = {
       tags: ["WebGPU", "Metal", "streamlines"],
     },
     {
+      slug: "denoising",
+      title: "Denoising",
+      summary:
+        "Separate signal from noise: PCA denoising for diffusion imaging and multi-echo ICA for fMRI.",
+      tags: ["svht_denoise", "ME-ICA", "tedana"],
+    },
+    {
       slug: "web_apps",
       title: "Web Apps",
       summary:
@@ -136,6 +143,16 @@ const config: SiteConfig = {
       name: "GPUStreamlines",
       href: "https://github.com/dipy/GPUStreamlines/",
       blurb: "GPU-accelerated streamline generation across CUDA, Metal, and WebGPU.",
+    },
+    {
+      name: "svht_denoise",
+      href: "https://github.com/rordenlab/svht_denoise",
+      blurb: "Fast PCA denoising for diffusion MRI, free of MPPCA's non-commercial restriction.",
+    },
+    {
+      name: "meica",
+      href: "https://github.com/niivue/meica-rs",
+      blurb: "tedana's multi-echo ICA denoising in Rust, natively and in the browser.",
     },
   ],
 }
