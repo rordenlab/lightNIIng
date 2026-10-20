@@ -1,6 +1,6 @@
 # type: horizontal
 # title: Streamline Generation
-# subtitle: Acceleration provided by GPU relative to CPU
+# subtitle: Speed of GPU relative to CPU  (speedup, higher is better)
 # source: https://github.com/neurolabusc/GPUStreamlines/tree/WebGPU/cuslines/webgpu
 # unit: ×
 Backend	Throughput

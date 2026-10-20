@@ -1,6 +1,6 @@
 # type: horizontal
 # title: Spatial Registration
-# subtitle: Spatial normalization of various images to standard space
+# subtitle: Aligning images to standard space (speedup, higher is better)
 # source: https://github.com/neurolabusc/allineate/tree/main/benchmark
 # unit: x
 Tool	Speedup

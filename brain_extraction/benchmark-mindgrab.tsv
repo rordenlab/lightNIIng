@@ -1,6 +1,6 @@
 # type: horizontal
 # title: Brain Extraction
-# subtitle: Faster scalp stripping
+# subtitle: Faster scalp stripping (speedup, higher is better)
 # source: https://github.com/rordenlab/strip_bench#runtime-results
 # unit: x
 Workflow	SpeedUp

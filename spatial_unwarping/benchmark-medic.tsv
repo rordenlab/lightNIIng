@@ -1,6 +1,6 @@
 # type: vertical
 # title: Multi-echo correction pipeline
-# subtitle: End-to-end runtime (seconds)
+# subtitle: End-to-end runtime  (speedup, higher is better)
 # source: https://github.com/rordenlab/medic_bench
 # unit: x
 Path	Runtime (speedup)
