@@ -88,7 +88,7 @@ export async function findUnpromotedDistAssets(
 
   for (const relativePath of await assetFiles(distAssets)) {
     const distHash = await fileHash(join(distAssets, relativePath))
-    if (manifest?.files[relativePath] === distHash) continue
+    if (manifest.files[relativePath] === distHash) continue
     if ((await fileHash(join(sourceAssets, relativePath))) === distHash) continue
     unpromoted.push(relativePath)
   }
@@ -144,17 +144,6 @@ async function assertCssAssetsExist(): Promise<void> {
 
 // ------- landing page -------------------------------------------------------
 
-export const HERO_VARIANTS = [
-  { id: "mesh", label: "NiiVue / cortical mesh", detail: "MNI152 · LH" },
-  { id: "voxel", label: "NiiVue / voxel volumes", detail: "MNI152 · axial" },
-  { id: "coronal", label: "NiiVue / voxel volumes", detail: "MNI152 · coronal" },
-  { id: "sagittal", label: "NiiVue / voxel volumes", detail: "MNI152 · sagittal" },
-  { id: "render", label: "NiiVue / surface render", detail: "cortical · multi-view" },
-  { id: "mri", label: "MRI scanner", detail: "scanner · gantry" },
-] as const
-const HERO_VARIANT_IDS = HERO_VARIANTS.map(({ id }) => id)
-const HERO_VARIANT_SCRIPT = `(function(){var variants=${JSON.stringify(HERO_VARIANT_IDS)};document.documentElement.setAttribute('data-hero-variant',variants[Math.floor(Math.random()*variants.length)])})();`
-
 export const ABOUT_RADAR_VARIANTS = [
   "ax",
   "cor",
@@ -167,11 +156,16 @@ export const ABOUT_RADAR_VARIANTS = [
 ] as const
 
 export const TEAM_HERO_VARIANTS = ["t1w", "walnut"] as const
-const ABOUT_RADAR_VARIANT_SCRIPT = `(function(){var variants=${JSON.stringify(ABOUT_RADAR_VARIANTS)};document.documentElement.setAttribute('data-about-radar-variant',variants[Math.floor(Math.random()*variants.length)])})();`
-const TEAM_HERO_VARIANT_SCRIPT = `(function(){var variants=${JSON.stringify(TEAM_HERO_VARIANTS)};document.documentElement.setAttribute('data-team-hero-variant',variants[Math.floor(Math.random()*variants.length)])})();`
+const variantScript = (attribute: string, variants: readonly string[]) =>
+  `(function(){var variants=${JSON.stringify(variants)};document.documentElement.setAttribute('${attribute}',variants[Math.floor(Math.random()*variants.length)])})();`
+const ABOUT_RADAR_VARIANT_SCRIPT = variantScript("data-about-radar-variant", ABOUT_RADAR_VARIANTS)
+const TEAM_HERO_VARIANT_SCRIPT = variantScript("data-team-hero-variant", TEAM_HERO_VARIANTS)
+
+const tagChips = (tags: readonly string[]) =>
+  tags.map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("")
 
 function projectCard(t: (typeof config.projects)[number], index: number): string {
-  const chips = t.tags.map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("")
+  const chips = tagChips(t.tags)
   return `
     <a class="card project-card project-card--${index + 1}" href="${escapeHtml(t.slug)}/index.html">
       <span class="card__index" aria-hidden="true">${index + 1}</span>
@@ -320,9 +314,10 @@ async function expandFigureDirectives(md: string, directory: string, title: stri
     const sourceLink = source
       ? `\n\n<p class="chart-source"><a href="${escapeHtml(source)}">Benchmark source ${ARROW}</a></p>`
       : ""
+    // Function replacement: a string would expand `$&`-style patterns in the source URL.
     expanded = expanded.replace(
       match[0],
-      `![Illustrative ${title} benchmark figure](${tsv.replace(/\.tsv$/i, ".svg")})${sourceLink}`,
+      () => `![Illustrative ${title} benchmark figure](${tsv.replace(/\.tsv$/i, ".svg")})${sourceLink}`,
     )
   }
   return expanded
@@ -342,9 +337,7 @@ async function buildTutorial(
   // Resolve each figure's real size so the browser reserves its box (no CLS).
   const { title, leadHtml, panelsHtml } = mdToPanels(md, (href) => imageMedia(join(dir, href)))
 
-  const chips = t.tags
-    .map((c) => `<span class="chip">${escapeHtml(c)}</span>`)
-    .join("")
+  const chips = tagChips(t.tags)
   const scannerSources = scannerImages.map(
     (name) => `../assets/scanners/${encodeURIComponent(name)}`,
   )
@@ -391,7 +384,6 @@ async function buildTutorial(
   })
 
   const outDir = join(outputRoot, t.slug)
-  await mkdir(outDir, { recursive: true })
   await Bun.write(join(outDir, "index.html"), html)
 
   // Copy every asset in the tutorial folder except the source Markdown, the
@@ -412,29 +404,23 @@ const REPO = config.appUrl // single source of truth for the project repo URL
 const TEAM_SHUFFLE_SCRIPT = `(function(){var grid=document.querySelector('[data-team-grid]');if(!grid)return;var teams=Array.from(grid.children);for(var i=teams.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=teams[i];teams[i]=teams[j];teams[j]=t}teams.forEach(function(team){grid.appendChild(team)})})();`
 
 const TEAMS = [
-  { slug: "brainchop", name: "brainchop", peak: "jpg", png: { width: 336, height: 336 } },
-  { slug: "dipy", name: "DIPY", peak: "png", png: { width: 336, height: 92 } },
-  { slug: "fideus", name: "fideus labs", peak: "png", png: { width: 266, height: 336 } },
+  { slug: "brainchop", name: "brainchop", peak: "jpg", logo: "logo-transparent.png", png: { width: 336, height: 336 } },
+  { slug: "dipy", name: "DIPY", peak: "png", logo: "logo.png", png: { width: 336, height: 92 } },
+  { slug: "fideus", name: "fideus labs", peak: "png", logo: "logo.png", png: { width: 266, height: 336 } },
   // The supplied SVG's white wordmark does not stay legible on all themes.
   // Use the contrast-corrected PNG in the directory; retain the SVG in source.
-  { slug: "neurodesk", name: "Neurodesk", peak: "png", png: { width: 336, height: 50 } },
+  { slug: "neurodesk", name: "Neurodesk", peak: "png", logo: "logo-dark.png", png: { width: 336, height: 50 } },
   // The legacy SVG has substantial empty viewBox space; use its full-area PNG
   // in the directory while retaining the SVG alongside the team's source files.
-  { slug: "niivue", name: "NiiVue", peak: "jpg", png: { width: 336, height: 336 } },
-  { slug: "nipreps", name: "NiPreps", peak: "png", png: { width: 336, height: 335 } },
-  { slug: "pennlinc", name: "PennLINC", peak: "jpg", png: { width: 282, height: 336 } },
+  { slug: "niivue", name: "NiiVue", peak: "jpg", logo: "logo.png", png: { width: 336, height: 336 } },
+  { slug: "nipreps", name: "NiPreps", peak: "png", logo: "logo.png", png: { width: 336, height: 335 } },
+  { slug: "pennlinc", name: "PennLINC", peak: "jpg", logo: "logo.png", png: { width: 282, height: 336 } },
 ] as const
 
 function teamCard(team: (typeof TEAMS)[number]): string {
   const markdown = readFileSync(join(ROOT, "teams", team.slug, "about.md"), "utf8")
   const profile = marked.parse(markdown, { async: false }) as string
-  const png =
-    team.slug === "brainchop"
-      ? "logo-transparent.png"
-      : team.slug === "neurodesk"
-        ? "logo-dark.png"
-      : "logo.png"
-  const logo = `<img src="../assets/teams/${team.slug}/${png}" width="${team.png.width}" height="${team.png.height}" alt="${escapeHtml(team.name)} logo" loading="lazy" decoding="async" />`
+  const logo = `<img src="../assets/teams/${team.slug}/${team.logo}" width="${team.png.width}" height="${team.png.height}" alt="${escapeHtml(team.name)} logo" loading="lazy" decoding="async" />`
   return `
         <article class="team-card team-card--${team.slug}">
           <button class="team-card__logo" type="button" data-lightbox-src="../assets/teams/${team.slug}/peak.${team.peak}" data-lightbox-alt="${escapeHtml(team.name)} team image" aria-label="View ${escapeHtml(team.name)} team image">${logo}</button>
@@ -472,7 +458,7 @@ export function aboutPage(): string {
           </div>
           <div>
             <dt>Frictionless Community Collaboration</dt>
-            <dd>To make open science as accessible as possible, our tools are distributed under widely accepted permissive licenses (BSD and MIT). This eliminates legal hurdles for university compliance teams, enterprise partners, and independent developers alike, allowing the entire community to share, build upon, and integrate these components freely.</dd>
+            <dd>To make open science as accessible as possible, our tools are distributed under widely accepted open source licenses, most often permissive BSD and MIT, with some under weak copyleft licenses such as MPL-2.0 and LGPL-2.1. Each tool states its license, so university compliance teams, enterprise partners, and independent developers can share, build upon, and integrate these components with clear terms.</dd>
           </div>
         </dl>
         <p>Our software aims for functional equivalence with the standard tools the scientific community relies on, but with a drastically smaller footprint, minimal dependencies, and clear, open licensing. Note that “equivalent” does not mean bit-identical: modern hardware optimizations (such as fused multiply-add operations) preserve higher precision during intermediate calculations than traditional sequential floating-point routines.</p>
@@ -604,9 +590,7 @@ async function buildInto(outputRoot: string, canonical: boolean): Promise<void> 
   await mkdir(outputRoot, { recursive: true })
 
   await Bun.write(join(outputRoot, "index.html"), landingPage())
-  await mkdir(join(outputRoot, "teams"), { recursive: true })
   await Bun.write(join(outputRoot, "teams", "index.html"), teamsPage())
-  await mkdir(join(outputRoot, "about"), { recursive: true })
   await Bun.write(join(outputRoot, "about", "index.html"), aboutPage())
   await Bun.write(join(outputRoot, "404.html"), await notFoundPage())
   // GitHub Pages: skip Jekyll so `assets/` etc. are served verbatim.

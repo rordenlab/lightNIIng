@@ -1,10 +1,10 @@
 # type: horizontal
 # title: Multi-echo ICA
-# subtitle: 76×76×46 × 150 volumes, 3 echoes (speedup, higher is better)
+# subtitle: 51×68×46 × 100 volumes, 3 echoes (speedup, higher is better)
 # source: https://github.com/niivue/meica-rs#benchmarks
 # unit: x
 Tool	Runtime (speedup)
 tedana	1
-meica (1 thread)*	1.18
+meica (1 thread)*	1.41
 tedana (no reports)	1.49
-meica*	2.26
+meica*	2.39

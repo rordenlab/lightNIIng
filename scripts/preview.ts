@@ -11,6 +11,7 @@ const DIST = fileURLToPath(new URL("../dist", import.meta.url))
 const PORT = Number(process.env.PORT ?? 4173)
 
 const server = Bun.serve({
+  hostname: "localhost",
   port: PORT,
   async fetch(req) {
     const r = await resolveFile(DIST, new URL(req.url).pathname)

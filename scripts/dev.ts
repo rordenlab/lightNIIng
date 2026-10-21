@@ -153,6 +153,8 @@ if (!process.env.NO_OPEN) {
 // config edits wouldn't take effect anyway — they need a dev restart.
 const watchTargets = [
   join(ROOT, "assets"),
+  join(ROOT, "teams"),
+  join(ROOT, "examples"),
   ...config.projects.map((t) => join(ROOT, t.slug)),
 ]
 

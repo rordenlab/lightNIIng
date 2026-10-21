@@ -38,6 +38,11 @@ test("renderer rejects unknown chart styles", () => {
   expect(() => renderFigure("# type: pie\nLabel\tValue\nA\t1")).toThrow("Unknown figure type")
 })
 
+test("renderer rejects blank or missing cells", () => {
+  expect(() => renderFigure("Label\tA\tB\nX\t1")).toThrow("Expected 2 values")
+  expect(() => renderFigure("Label\tA\nX\t ")).toThrow("Expected 1 values")
+})
+
 test("long horizontal labels wrap at a readable semantic boundary", () => {
   const automatic = renderFigure(
     "Workflow\tSpeedup\nniimath mindgrab (OpenMP, CPU)*\t16",

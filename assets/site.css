@@ -982,182 +982,6 @@ a:hover {
   font-weight: 550;
 }
 
-.hero__visual {
-  --hero-scan: 18%;
-  --hero-radar-speed: 14.3s;
-  --hero-image-size: 118% auto;
-  --hero-base-image: url("mesh-base.png");
-  --hero-active-image: url("mesh-active.png");
-  position: relative;
-  min-height: clamp(22rem, 36vw, 33rem);
-  margin-right: min(-10vw, -3rem);
-  isolation: isolate;
-  animation: hero-radar-position var(--hero-radar-speed) linear infinite;
-}
-
-:root[data-hero-variant="voxel"] .hero__visual,
-:root[data-hero-variant="coronal"] .hero__visual,
-:root[data-hero-variant="sagittal"] .hero__visual,
-:root[data-hero-variant="render"] .hero__visual,
-:root[data-hero-variant="mri"] .hero__visual {
-  --hero-image-size: 96% auto;
-  animation-name: hero-radar-position-wide;
-}
-
-:root[data-hero-variant="voxel"] .hero__visual {
-  --hero-base-image: url("voxel-base.png");
-  --hero-active-image: url("voxel-active.png");
-}
-
-:root[data-hero-variant="coronal"] .hero__visual {
-  --hero-base-image: url("coronal-base.png");
-  --hero-active-image: url("coronal-active.png");
-}
-
-:root[data-hero-variant="sagittal"] .hero__visual {
-  --hero-base-image: url("sagittal-base.png");
-  --hero-active-image: url("sagittal-active.png");
-}
-
-:root[data-hero-variant="render"] .hero__visual {
-  --hero-base-image: url("render-base.png");
-  --hero-active-image: url("render-active.png");
-}
-
-:root[data-hero-variant="mri"] .hero__visual {
-  --hero-base-image: url("mri-base.png");
-  --hero-active-image: url("mri-active.png");
-}
-
-.hero__visual[role="button"] {
-  cursor: pointer;
-  user-select: none;
-}
-
-.hero__visual.radar-paused,
-.hero__visual.radar-paused .hero__scanline,
-.hero__visual.radar-offscreen,
-.hero__visual.radar-offscreen .hero__scanline {
-  animation-play-state: paused;
-}
-
-.hero__mesh-base,
-.hero__activation {
-  position: absolute;
-  inset: 0;
-  background-position: center;
-  background-repeat: no-repeat;
-  /* One shared size keeps each base/activation pair registered. */
-  background-size: var(--hero-image-size);
-}
-
-.hero__mesh-base {
-  z-index: 1;
-  background-image: var(--hero-base-image);
-  filter: contrast(1.02) brightness(0.78);
-  opacity: 0.88;
-}
-
-/* On the light site theme, let the supplied base imagery retain its original
-   luminance. The darker treatment above remains useful against the dark UI. */
-:root[data-theme="light"] .hero__mesh-base {
-  filter: none;
-  opacity: 1;
-}
-
-.hero__activation {
-  z-index: 2;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    transparent calc(var(--hero-scan) - 46.8%),
-    color-mix(in srgb, var(--accent) 5%, transparent) calc(var(--hero-scan) - 39%),
-    color-mix(in srgb, var(--accent) 16%, transparent) calc(var(--hero-scan) - 23.4%),
-    color-mix(in srgb, var(--accent) 42%, transparent) calc(var(--hero-scan) - 10.4%),
-    color-mix(in srgb, var(--accent) 76%, transparent) calc(var(--hero-scan) - 3.64%),
-    var(--accent) calc(var(--hero-scan) - 0.12%),
-    transparent calc(var(--hero-scan) + 0.12%),
-    transparent 100%
-  );
-  -webkit-mask: var(--hero-active-image) center / var(--hero-image-size) no-repeat;
-  mask: var(--hero-active-image) center / var(--hero-image-size) no-repeat;
-  filter: drop-shadow(0 0 8px var(--accent-glow));
-  opacity: 0.96;
-}
-
-.hero__scanline {
-  position: absolute;
-  z-index: 3;
-  top: 12%;
-  bottom: 12%;
-  left: var(--hero-scan);
-  width: 2px;
-  background: linear-gradient(transparent, color-mix(in srgb, var(--accent) 92%, white) 28%, color-mix(in srgb, var(--accent) 92%, white) 72%, transparent);
-  box-shadow: 0 0 6px var(--accent), 0 0 22px var(--accent-glow);
-  transform: translateX(-50%);
-  opacity: 0;
-  animation: hero-radar-line var(--hero-radar-speed) linear infinite;
-}
-
-.hero__coordinates {
-  position: absolute;
-  z-index: 4;
-  right: 8%;
-  bottom: 10%;
-  display: flex;
-  gap: 1.2rem;
-  color: rgba(240, 241, 237, 0.42);
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.hero__coordinates--voxel,
-.hero__coordinates--coronal,
-.hero__coordinates--sagittal,
-.hero__coordinates--render,
-.hero__coordinates--mri {
-  display: none;
-}
-
-:root[data-hero-variant="voxel"] .hero__coordinates--mesh,
-:root[data-hero-variant="coronal"] .hero__coordinates--mesh,
-:root[data-hero-variant="sagittal"] .hero__coordinates--mesh,
-:root[data-hero-variant="render"] .hero__coordinates--mesh,
-:root[data-hero-variant="mri"] .hero__coordinates--mesh {
-  display: none;
-}
-
-:root[data-hero-variant="voxel"] .hero__coordinates--voxel,
-:root[data-hero-variant="coronal"] .hero__coordinates--coronal,
-:root[data-hero-variant="sagittal"] .hero__coordinates--sagittal,
-:root[data-hero-variant="render"] .hero__coordinates--render,
-:root[data-hero-variant="mri"] .hero__coordinates--mri {
-  display: flex;
-}
-
-@property --hero-scan {
-  syntax: "<percentage>";
-  inherits: true;
-  initial-value: 18%;
-}
-
-@keyframes hero-radar-position {
-  from { --hero-scan: 18%; }
-  to { --hero-scan: 82%; }
-}
-
-@keyframes hero-radar-position-wide {
-  from { --hero-scan: 0%; }
-  to { --hero-scan: 100%; }
-}
-
-@keyframes hero-radar-line {
-  0%, 99.7% { opacity: 0.92; }
-  99.8%, 100% { opacity: 0; }
-}
-
 /* Editorial section structure. */
 .section {
   padding-block: clamp(4.4rem, 7.2vw, 7.2rem);
@@ -2352,10 +2176,6 @@ a:hover {
     gap: 1rem;
   }
 
-  .hero__visual {
-    margin-right: -9rem;
-  }
-
   .card__content {
     grid-template-columns: minmax(12rem, 0.8fr) minmax(16rem, 1fr);
     column-gap: 2rem;
@@ -2363,12 +2183,6 @@ a:hover {
 
   .tools {
     grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (min-width: 821px) and (max-width: 1250px) {
-  :root[data-hero-variant="render"] .hero__visual {
-    margin-right: 0;
   }
 }
 
@@ -2387,24 +2201,6 @@ a:hover {
 
   .hero__modalities {
     display: none;
-  }
-
-  .hero__visual {
-    min-height: min(32rem, 76vw);
-    margin: -3rem -10vw -2rem 18vw;
-  }
-
-  :root[data-hero-variant="voxel"] .hero__visual,
-  :root[data-hero-variant="coronal"] .hero__visual,
-  :root[data-hero-variant="sagittal"] .hero__visual,
-  :root[data-hero-variant="render"] .hero__visual,
-  :root[data-hero-variant="mri"] .hero__visual {
-    min-height: clamp(16rem, 43vw, 22rem);
-    margin: -0.5rem -1rem -2rem;
-  }
-
-  .hero__coordinates {
-    right: 12%;
   }
 
   .about__radar {
@@ -2483,17 +2279,6 @@ a:hover {
     font-size: clamp(2.6rem, 12.5vw, 3.8rem);
   }
 
-  .hero__visual {
-    min-height: 20rem;
-    margin: -1rem -8rem -2rem 0;
-  }
-
-  .hero__coordinates {
-    right: 20%;
-    flex-direction: column;
-    gap: 0.2rem;
-  }
-
   .section {
     padding-block: 3.5rem;
   }
@@ -2548,22 +2333,8 @@ a:hover {
     transition: none !important;
   }
 
-  .hero__visual,
-  .hero__scanline,
   .about__radar {
     animation: none !important;
-  }
-
-  .hero__activation {
-    display: none;
-  }
-
-  .hero__scanline {
-    opacity: 0;
-  }
-
-  .hero__mesh-base {
-    opacity: 0.78;
   }
 
   .about__radar-activation,

@@ -17,7 +17,6 @@ export type SiteConfig = {
   intro: string
   siteUrl: string
   appUrl: string
-  releasesUrl: string
   defaultAccent: string
   projects: Project[]
   tools: Tool[]
@@ -31,7 +30,6 @@ const config: SiteConfig = {
     "Permissively open infrastructure that simplifies deployment and accelerates proven neuroimaging methods.",
   siteUrl: "https://lightniing.org",
   appUrl: "https://github.com/rordenlab/lightNIIng",
-  releasesUrl: "https://github.com/rordenlab/lightNIIng",
   defaultAccent: "orange",
   projects: [
     {

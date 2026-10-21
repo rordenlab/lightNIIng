@@ -1,6 +1,7 @@
 import { readdir, readFile } from "node:fs/promises"
 import { basename, dirname, extname, join } from "node:path"
 import { fileURLToPath } from "node:url"
+import { escapeHtml } from "./render.ts"
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url))
 // The fallback keeps generated files attractive when viewed directly (for
@@ -24,12 +25,6 @@ type Figure = {
   rows: { label: string; highlighted: boolean; values: number[] }[]
 }
 
-const xml = (value: string) =>
-  value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
 
 function parseFigure(input: string): Figure {
   const lines = input.split(/\r?\n/).filter((line) => line.trim())
@@ -47,6 +42,9 @@ function parseFigure(input: string): Figure {
     const rawLabel = cells.shift()?.trim() ?? ""
     const highlighted = rawLabel.endsWith("*")
     const label = rawLabel.replace(/\*$/, "").trim()
+    // Number("") is 0, so blank cells must be rejected explicitly.
+    if (cells.length !== headers.length - 1 || cells.some((cell) => !cell.trim()))
+      throw new Error(`Expected ${headers.length - 1} values in row: ${line}`)
     const values = cells.map((value) => Number(value))
     if (values.some((value) => !Number.isFinite(value))) throw new Error(`Non-numeric value in row: ${line}`)
     return { label, highlighted, values }
@@ -63,7 +61,7 @@ function parseFigure(input: string): Figure {
 }
 
 const text = (x: number, y: number, value: string, attrs = "") =>
-  `<text x="${x}" y="${y}" ${attrs}>${xml(value)}</text>`
+  `<text x="${x}" y="${y}" ${attrs}>${escapeHtml(value)}</text>`
 
 function wrapLabel(value: string, maxCharacters = 24): string[] {
   const explicitLines = value.split("|").map((line) => line.trim()).filter(Boolean)
@@ -99,9 +97,9 @@ function horizontalLabel(
   const lineHeight = 20
   const firstY = center + 6 - ((lines.length - 1) * lineHeight) / 2
   const spans = lines
-    .map((line, index) => `<tspan x="${x}" y="${firstY + index * lineHeight}">${xml(line)}</tspan>`)
+    .map((line, index) => `<tspan x="${x}" y="${firstY + index * lineHeight}">${escapeHtml(line)}</tspan>`)
     .join("")
-  return `<text text-anchor="end" class="label${highlighted ? " accent" : ""}" aria-label="${xml(value.replace(/\|/g, " "))}">${spans}</text>`
+  return `<text text-anchor="end" class="label${highlighted ? " accent" : ""}" aria-label="${escapeHtml(value.replace(/\|/g, " "))}">${spans}</text>`
 }
 
 function horizontalChart(figure: Figure): string {
@@ -126,6 +124,15 @@ function horizontalChart(figure: Figure): string {
   return parts.join("")
 }
 
+function gridLines(left: number, top: number, width: number, height: number): string {
+  let lines = ""
+  for (let tick = 0; tick <= 4; tick++) {
+    const y = top + height - (tick / 4) * height
+    lines += `<line x1="${left}" y1="${y}" x2="${left + width}" y2="${y}" stroke="${GRID}" stroke-width="1"/>`
+  }
+  return lines
+}
+
 function verticalChart(figure: Figure): string {
   const left = 115
   const top = 190
@@ -134,11 +141,7 @@ function verticalChart(figure: Figure): string {
   const max = Math.max(...figure.rows.flatMap((row) => row.values), 1)
   const groupWidth = width / Math.max(figure.rows.length, 1)
   const barWidth = Math.min(54, (groupWidth - 22) / Math.max(figure.headers.length, 1))
-  const parts: string[] = []
-  for (let tick = 0; tick <= 4; tick++) {
-    const y = top + height - (tick / 4) * height
-    parts.push(`<line x1="${left}" y1="${y}" x2="${left + width}" y2="${y}" stroke="${GRID}" stroke-width="1"/>`)
-  }
+  const parts = [gridLines(left, top, width, height)]
   figure.rows.forEach((row, rowIndex) => {
     const center = left + groupWidth * (rowIndex + 0.5)
     row.values.forEach((value, seriesIndex) => {
@@ -158,11 +161,7 @@ function lineChart(figure: Figure): string {
   const width = 970
   const height = 330
   const max = Math.max(...figure.rows.flatMap((row) => row.values), 1)
-  const parts: string[] = []
-  for (let tick = 0; tick <= 4; tick++) {
-    const y = top + height - (tick / 4) * height
-    parts.push(`<line x1="${left}" y1="${y}" x2="${left + width}" y2="${y}" stroke="${GRID}" stroke-width="1"/>`)
-  }
+  const parts = [gridLines(left, top, width, height)]
   figure.headers.forEach((header, seriesIndex) => {
     const points = figure.rows.map((row, rowIndex) => {
       const x = left + (rowIndex / Math.max(figure.rows.length - 1, 1)) * width
@@ -189,7 +188,7 @@ export function renderFigure(input: string): string {
         ? verticalChart(figure)
         : lineChart(figure)
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
-<title id="title">${xml(figure.title)}</title><desc id="desc">${xml(figure.subtitle)}</desc>
+<title id="title">${escapeHtml(figure.title)}</title><desc id="desc">${escapeHtml(figure.subtitle)}</desc>
 <rect width="1200" height="560" rx="18" fill="${BACKGROUND}"/>
 <style>text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:${INK}}.title{font-size:34px;font-weight:650;letter-spacing:-.8px}.subtitle{fill:${MUTED};font-size:17px}.label{font-size:17px;font-weight:600}.value{font:600 14px ui-monospace,SFMono-Regular,monospace}.accent{fill:${ACCENT}}</style>
 ${text(104, 70, figure.title, 'class="title"')}${text(105, 100, figure.subtitle, 'class="subtitle"')}<g transform="translate(0 -30)">${chart}</g>

@@ -197,10 +197,10 @@ if (
     radar.setAttribute("title", `${paused ? "Click to resume" : "Click to pause"} · Double-click to change image`)
     }
     const toggle = () => sync(!radar.classList.contains("radar-paused"))
-    const variants = (radar.getAttribute("data-radar-variants") || radar.getAttribute("data-hero-variants") || "")
+    const variants = (radar.getAttribute("data-radar-variants") || "")
     .split(/\s+/)
     .filter(Boolean)
-    const variantAttribute = radar.getAttribute("data-radar-attribute") || "data-hero-variant"
+    const variantAttribute = radar.getAttribute("data-radar-attribute")
     const assetBase = radar.getAttribute("data-radar-asset-base") || "assets/"
     const assetPrefix = radar.getAttribute("data-radar-asset-prefix") || ""
   const PRELOAD_TIMEOUT = 5000
